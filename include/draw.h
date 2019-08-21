@@ -31,7 +31,12 @@
 #define COIN3 "../../data/image/JB_94.png"
 #define COIN4 "../../data/image/JB_95.png"
 
-#define texNB 18
+#define TRELLIS "../../data/image/trellis2.png"
+
+#define JUMP1 "../../data/image/JB_31.png"
+#define JUMP2 "../../data/image/JB_32.png"
+
+#define texNB 21
 #define bufferNB 10
 
 #include "map.h"
@@ -50,6 +55,7 @@ void drawRect(float x, float y, float width, float height);
 void drawChar(float x, float y, float width, float height, typ_action action);
 void drawSleep(float x, float y, float width, float height, typ_action action);
 void drawGame(float x, float y, float width, float height, int score);
+void drawTrellis(float x, float y, float width, float height);
 void coordDisplay(void);
 void background(void);
 void banana(typ_map *m);

@@ -30,20 +30,26 @@
 #define TILE_NUMBER 4
 
 #include <stdbool.h>
+#include "game.h"
 
 /* Definitions. */
 
 struct str_tile
 {
     GLuint texID;
-    int goingThrough;
+    int solid;
 };
 typedef struct str_tile typ_tile;
+
+struct str_decor{
+    typ_position *spiderWeb;
+};
+typedef struct str_decor typ_decor;
 
 struct str_map{
 	int width,height;
     unsigned int **matrice;
-    unsigned int **used;
+    unsigned int **banana;
     long int xscroll,yscroll;
     typ_tile *tiles;
 };
@@ -54,6 +60,7 @@ typ_map *loadMap(char *lvl);
 void drawMap(typ_map *m);
 void initBanana(typ_map *m);
 void drawBanana(typ_map *m);
+void printMap(typ_map *m); // test function.
 void freeMap(typ_map *m);
 
 

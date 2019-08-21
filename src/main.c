@@ -36,29 +36,30 @@ int main(int argc, char *argv[])
 {
 	glutInit(&argc, argv); // Initialize GLUT.
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE); // Enable double buffered mode.
-	
+
 	//window2=secondScreen(argv[0]);
 	glutInitWindowPosition(100, 100); // position the window's initial top-left corner.
 	glutInitWindowSize(MaxX*Square_size, MaxY*Square_size); // Set the window's initial width/height - non-square.
 	window=glutCreateWindow(argv[0]); // Create window with the given title.
 	glutSetWindow (window);
-
 		InitImage(); // Our own DevIL initialization.
-		InitAudio();
 		InitGame();
+		#ifdef _AUDIO_ENABLED
+		InitAudio();
 		playAudio(0,1);
+		#endif // audio enabled.
 	glutDisplayFunc(vDisplay); // Register callback handler for window re-paint event.
 	glutIdleFunc(vDisplay);	// callback activiting.
 	glutTimerFunc(TIMER, timer, 0);
 	glutReshapeFunc(vReshape); // Register callback handler for window re-size event.
 	glutKeyboardFunc(keyPressed); // Register the function called when the keyboard is pressed.
 	glutSpecialFunc(specialKeyPressed);
-	
+
 	Setup();
 
 	glutMainLoop(); // Enter the infinite event-processing loop.
-	
-	return 0;
+
+	return 1;
 }
 
 GLuint secondScreen(char *windowName)

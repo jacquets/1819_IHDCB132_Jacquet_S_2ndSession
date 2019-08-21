@@ -30,10 +30,9 @@
 //  Update functions.
 // ----------------------------------------------------
 
-typ_position *adjustment(typ_character *c, typ_map *m)
+typ_position *adjustment(typ_position *test, typ_map *m)
 {
-    typ_position *test=c->posChar;
-    while(!traverse(c, m))
+    while(collision(test, m))
     {
         test->posY-=0.1;
     }
@@ -41,104 +40,123 @@ typ_position *adjustment(typ_character *c, typ_map *m)
     return test;
 }
 
-void updatePosition(typ_character *c, typ_map *m)
-{     
-    if(!traverse(c, m))
+void bananaCollision(typ_character *c, typ_map *m, typ_game *g)
+{
+    int minX = (c->posChar->posX + c->posChar->sizeX/2) / Square_size;
+    int minY = (c->posChar->posY + c->posChar->sizeY/2) / Square_size;
+    int maxX = Square_size;
+    int maxY = Square_size;
+
+    if(m->banana[minX][minY]==1)
+    {
+        if((minX + maxX) < c->posChar->posX
+        || (c->posChar->posX + c->posChar->sizeX) < minX
+        || (minY + maxY) < c->posChar->posY
+        || (c->posChar->posY + c->posChar->sizeY) < minY)
+        {
+            m->banana[minX][minY]=0;
+            g->score++;
+        }
+    }
+    return;
+}
+
+void updatePosition(typ_character *c, typ_map *m, typ_decor *d, typ_game *g)
+{
+
+    if(collision(c->posChar,m))
     {
         if(c->isJumping==true)
         {
-            c->posChar=adjustment(c,m);
+            c->posChar=adjustment(c->posChar,m);
             c->isJumping=false;
+            c->action=NONE;
+        }
+    }
+    else if(isColliding(c->posChar, d->spiderWeb))
+    {
+        if(c->isJumping==true)
+        {
+            c->isJumping=false;
+            c->action=DOWN;
         }
     }
     else
     {
+        c->action=DOWN;
         c->v_y += v_grav; // incrementation of the speed.
         c->posChar->posY += c->v_y; // incrementation of the position.
-    }  
+    }
+    bananaCollision(c, m, g);
 }
 
-bool traverse(typ_character* c, typ_map* m)
+int collision(typ_position* test, typ_map* m)
 {
-    typ_position *test=c->posChar;
-    int i, j, tileIndice;
-    int minX, maxX, minY, maxY;
-	minX = test->posX / Square_size;
-	minY = test->posY / Square_size;
-	maxX = (test->posX + test->sizeX -1) / Square_size;
-	maxY = (test->posY + test->sizeY -1) / Square_size;
-    bool traverse_down/*, traverse_up, traverse_left, traverse_right*/ ;
-    
-if(test->sizeY+test->posY<m->height*Square_size-10)
+    int collision_down/*, collision_up, collision_left, collision_right*/;
+    int i=0, j=0, tileIndice;
+    int minX, maxX;
+    //int minY, maxY;
+  	minX = test->posX / Square_size;
+  	//minY = test->posY / Square_size;
+  	maxX = (test->posX + test->sizeX -1) / Square_size;
+  	//maxY = (test->posY + test->sizeY -1) / Square_size;
+
+if(test->sizeY + test->posY < m->height * Square_size - 10)
 {
-    //
     // If we hit a block below.
-    //
     j = (test->posY + test->sizeY) / Square_size;
     for(i=minX;i<=maxX;i++)
     {
-        tileIndice = m->matrice[i][j];
-        traverse_down=(m->tiles[tileIndice].goingThrough);
-        //printf("down: %d*%d ::: %d\n",i,j,tileIndice);
+        tileIndice=m->matrice[i][j];
+        collision_down=(m->tiles[tileIndice].solid);
     }
-    //
+    /*
     // If we hit a block to the left.
-    //
     i=(test->posX -1) / Square_size;
     for(j=minY;j<=maxY;j++)
     {
         tileIndice = m->matrice[i][j];
-        //traverse_left=(m->tiles[tileIndice].goingThrough);
-        //printf("left: %d*%d ::: %d\n",i,j,tileIndice);
-        j=maxY+1;        
+        collision_left=(m->tiles[tileIndice].solid);
+        j=maxY+1;
     }
-    //
     // If we hit a block to the right.
-    //
-    i=(test->posX + test->sizeX) / Square_size; 
+    i=(test->posX + test->sizeX) / Square_size;
     for(j=minY;j<=maxY;j++)
     {
         tileIndice = m->matrice[i][j];
-        //traverse_right=(m->tiles[tileIndice].goingThrough);
-        //printf("right: %d*%d ::: %d\n",i,j,tileIndice);
-        j=maxY+1;                    
+        collision_right=(m->tiles[tileIndice].solid);
+        j=maxY+1;
     }
-    //
     // If we hit a block above.
-    //
     j = (test->posY - 1) / Square_size;
     for(i=minX;i<=maxX;i++) //Si il y a un bloc au dessus
     {
         tileIndice = m->matrice[i][j];
-        //traverse_up=(m->tiles[tileIndice].goingThrough);
-        //printf("up: %d*%d ::: %d\n",i,j,tileIndice);
+        collision_up=(m->tiles[tileIndice].solid);
     }
+    */
 }
-return traverse_down/* && traverse_left && traverse_right*/;
+return collision_down /*|| collision_left || collision_right || collision_up*/;
 }
 
-void updateCharacter(typ_character* c, typ_map* m)
+void updateTests(typ_character* c, typ_map* m)
 {
-    //int speed=2;
-    /*
-    if (c->gravity==1)
-		c->posChar->posY += 2;
-    else
-        c->jumptime = 1;
-    */
     // bord gauche
     if (c->posChar->posX-1<0) //Si on touche le bord gauche de la map
     {
         c->posChar->posX--;
     }
     // bord droit
-    if (c->posChar->posX + c->posChar->sizeY >= m->width*Square_size-2) //Si on touche le bord droite de la map
+    if (c->posChar->posX + c->posChar->sizeY >= m->width*Square_size-2)
+    {
         c->posChar->posX--;
+    }
     // bord haut
     if (c->posChar->posY<0)
     {
-        //c->jumptime = 1001;
-        c->posChar->posY++;
+        c->isJumping=false;
+        c->posChar->posY+=10;
+        c->v_y+=10;
     }
 /*
     if(c->action==JUMP)
@@ -162,18 +180,50 @@ void updateCharacter(typ_character* c, typ_map* m)
                 //loseDisplay();
 }
 
+void updateSnake(typ_character *e, typ_character *c, typ_map *m)
+{
+    // testing limits.
+    if(e->action==RIGHT)
+    {
+      if(e->posChar->posX < c->posChar->posX)
+          e->posChar->posX+=1;
+      else
+          e->action=LEFT;
+    }
+    if(e->action==LEFT)
+    {
+      if(e->posChar->posX > c->posChar->posX)
+          e->posChar->posX-=1;
+      else
+        e->action=RIGHT;
+    }
 
+
+    // Ground collision else gravity.
+    int minX=(e->posChar->posX + e->posChar->sizeX/2) / Square_size;
+    int minY=(e->posChar->posY + e->posChar->sizeY) / Square_size;
+    if(m->matrice[minX][minY]==1)
+    {
+        adjustment(e->posChar, m);
+    }
+    else
+    {
+        // Gravity.
+        e->v_y += v_grav;
+        e->posChar->posY += e->v_y;
+    }
+}
 
 GLboolean CheckCollision(typ_position *one, typ_position *two) // AABB - AABB collision
 {
     // Collision x-axis?
     bool collisionX = one->posX + one->sizeX >= two->posX &&
         two->posX + two->sizeX >= one->posX;
-    
+
     // Collision y-axis?
     bool collisionY = one->posY + one->sizeY >= two->posY &&
         two->posY + two->sizeY >= one->posY;
-    
+
     // Collision only if on both axes
     return collisionX && collisionY;
 
@@ -181,8 +231,8 @@ GLboolean CheckCollision(typ_position *one, typ_position *two) // AABB - AABB co
 
 bool isColliding(typ_position *one, typ_position *two) // AABB - AABB collision
 {
-    return !((one->posX + one->sizeX) < two->posX 
-    || (two->posX + two->sizeX) < one->posX 
+    return !((one->posX + one->sizeX) < two->posX
+    || (two->posX + two->sizeX) < one->posX
     || (one->posY + one->sizeY) < two->posY
     || (two->posY + two->sizeY) < one->posY);
 }
@@ -216,8 +266,8 @@ int adjust(void)
     return one.posY+=0.1;
 }
 
-void updateTest(){
-
+void updateTest()
+{
     if(isColliding(&one,&two) || isColliding(&one,&three))
     {
         if(isJumping==true)
@@ -251,7 +301,7 @@ int main(int argc, char *argv[]){
     glutReshapeFunc(reshapeTest);
     glutMainLoop();
     return 0;
-} 
+}
 
 void loopTest()
 {
@@ -267,7 +317,7 @@ void timerTest(int value)
 }
 
 void keyTest(int key, int x, int y)
-{ 
+{
     switch(key)
     {
         case GLUT_KEY_DOWN:
@@ -290,10 +340,10 @@ void keyTest(int key, int x, int y)
             /* direction en vol */
             if(isJumping==true)
             {
-                one.posX -= v_x;               
+                one.posX -= v_x;
             }
             break;
-        default: 
+        default:
             break;
     }
 }
@@ -311,7 +361,7 @@ void reshapeTest(int NewWidth,int NewHeight)
 }
 
 void displayTest(void)
-{   
+{
     glClearColor(0.0f,0.0f,0.0f,0.0f); // Clear to black.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the colour buffer.
         glPushMatrix();

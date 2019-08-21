@@ -73,6 +73,11 @@ GLuint *loadTex(void)
     texID[16]=ImageLoad(COIN3);
     texID[17]=ImageLoad(COIN4);
 
+    texID[18]=ImageLoad(TRELLIS);
+
+    texID[19]=ImageLoad(JUMP1);
+    texID[20]=ImageLoad(JUMP2);
+
     return texID;
 }
 
@@ -93,9 +98,9 @@ void drawRect(float x, float y, float width, float height)
 }
 
 void drawGame(float x, float y, float width, float height, int score)
-{   
+{
     char buffer[50];
-    sprintf(buffer, "SCORE: %d", score); 
+    sprintf(buffer, "SCORE: %d", score);
     glBegin(GL_QUADS);
         glColor3f(0.5f, 0.5f, 0.5f);
             glTexCoord2f (0.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
@@ -108,51 +113,34 @@ void drawGame(float x, float y, float width, float height, int score)
     vBitmapOutput(Square_size*20,HEIGHT-1, buffer,GLUT_BITMAP_HELVETICA_12);
 }
 
-void drawSleep(float x, float y, float width, float height, typ_action action)
+void drawTrellis(float x, float y, float width, float height)
 {
-    
     glBegin(GL_QUADS);
-        glBindTexture(GL_TEXTURE_2D, texID[0]);
-    if(action==RIGHT)
-    {
         glTexCoord2f (1.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
         glTexCoord2f (0.0f, 1.0f); glVertex2f(x+width,y);
         glTexCoord2f (0.0f, 0.0f); glVertex2f(x+width,y+height);
         glTexCoord2f (1.0f, 0.0f); glVertex2f(x,y+height);
-    }
-    else
-    {
-        glTexCoord2f (0.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
-        glTexCoord2f (1.0f, 1.0f); glVertex2f(x+width,y);
-        glTexCoord2f (1.0f, 0.0f); glVertex2f(x+width,y+height);
-        glTexCoord2f (0.0f, 0.0f); glVertex2f(x,y+height);
-    }
-        glBindTexture(GL_TEXTURE_2D, texID[1]);
-        glTexCoord2f (1.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
-        glTexCoord2f (0.0f, 1.0f); glVertex2f(x+width,y);
-        glTexCoord2f (0.0f, 0.0f); glVertex2f(x+width,y+height);
-        glTexCoord2f (1.0f, 0.0f); glVertex2f(x,y+height);
-        glBindTexture(GL_TEXTURE_2D, 0);
     glEnd();
 }
 
 void drawChar(float x, float y, float width, float height, typ_action action)
 {
     glBegin(GL_QUADS);
-    if(action==RIGHT)
-    {
-        glTexCoord2f (1.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
-        glTexCoord2f (0.0f, 1.0f); glVertex2f(x+width,y);
-        glTexCoord2f (0.0f, 0.0f); glVertex2f(x+width,y+height);
-        glTexCoord2f (1.0f, 0.0f); glVertex2f(x,y+height);
-    }
-    else
+    if(action==LEFT)
     {
         glTexCoord2f (0.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
         glTexCoord2f (1.0f, 1.0f); glVertex2f(x+width,y);
         glTexCoord2f (1.0f, 0.0f); glVertex2f(x+width,y+height);
         glTexCoord2f (0.0f, 0.0f); glVertex2f(x,y+height);
     }
+    else
+    {
+        glTexCoord2f (1.0f, 1.0f); glVertex2f(x,y); // vertex z default to 0.
+        glTexCoord2f (0.0f, 1.0f); glVertex2f(x+width,y);
+        glTexCoord2f (0.0f, 0.0f); glVertex2f(x+width,y+height);
+        glTexCoord2f (1.0f, 0.0f); glVertex2f(x,y+height);
+    }
+
     glEnd();
 }
 

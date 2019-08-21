@@ -10,16 +10,12 @@
 #define _GAME_H_
 
 #define v_jump -4
-#define v_air 3.5
+#define v_air 1.5
 #define v_grav 0.08 // gravity.
-
 #define BUFFER 256
-
 #define ESCAPE 27 // ascii code for the escape key.
-
 #define objectNB 50
 #define menuOptionNB 5 // menu option number for the special key.
-
 #define TIMER 30 // ms.
 
 #define BACKUP1 "../../data/backup/last_backup.bac" // database #1 to retrieve gameplay.
@@ -28,10 +24,10 @@
 // Definitions.
 enum enum_state{MENU, GAME, RULES, SCORE, SAVE, EXIT};
 typedef enum enum_state typ_state;
-//enum enum_menu{GAME_MENU, RULES_MENU, SCORE_MENU, SAVE_MENU, EXIT_MENU};
-//typedef enum enum_menu typ_menu;
 enum enum_action{RIGHT, LEFT, UP, DOWN, NONE};
 typedef enum enum_action typ_action;
+enum enum_movement{CHARACTER, MAP};
+typedef enum enum_movement typ_movement;
 
 struct str_game {
     char *username;
@@ -54,7 +50,8 @@ struct str_character {
     bool isJumping;
     bool isColliding;
     int texSelected;
-    int textureDelay;
+    int textureDelay; // incremental textures changes.
+    int keyTextureDelay; // specific changes when a key is pressed.
     int speed;
     //bool turnToRight;
     int win;
@@ -62,6 +59,7 @@ struct str_character {
     int lvlLose;
     int invisible;
     typ_action action;
+    typ_movement control; // keyboard action switch between map position and character position.
     typ_position *posChar;
 };
 typedef struct str_character typ_character, ptr_character;

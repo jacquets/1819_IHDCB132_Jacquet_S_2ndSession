@@ -82,9 +82,9 @@ typ_map *createMap(int w, int h)
     m->width=w;
     m->height=h;
     m->matrice=malloc(w*sizeof(unsigned int*)); //allocation mémoire pour le tableau
-    m->used=malloc(w*sizeof(unsigned int*));
+    m->banana=malloc(w*sizeof(unsigned int*));
 
-	if(m->matrice==NULL || m->used==NULL){
+	if(m->matrice==NULL || m->banana==NULL){
 		free(m);
 		HandleErrors();
     }
@@ -94,8 +94,8 @@ typ_map *createMap(int w, int h)
     for(i=0;i<w;i++)
     {
         m->matrice[i]=malloc(h*sizeof(unsigned int));
-        m->used[i]=malloc(h*sizeof(unsigned int));
-		if(m->matrice[i]==NULL || m->used[i]==NULL){
+        m->banana[i]=malloc(h*sizeof(unsigned int));
+		if(m->matrice[i]==NULL || m->banana[i]==NULL){
 			free(m);
 			HandleErrors();
 		}
@@ -103,7 +103,7 @@ typ_map *createMap(int w, int h)
 
 	m->tiles=malloc(TILE_NUMBER*sizeof(typ_tile));
 	if(m->tiles==NULL){
-		free(m->matrice); free(m->used); free(m);
+		free(m->matrice); free(m->banana); free(m);
 		HandleErrors();
     }
 
@@ -113,11 +113,11 @@ typ_map *createMap(int w, int h)
 	m->tiles[3].texID=ImageLoad(MAP4);
 	m->tiles[4].texID=ImageLoad(BANANA);
 
-	m->tiles[0].goingThrough=1;
-	m->tiles[1].goingThrough=0;
-	m->tiles[2].goingThrough=0;
-	m->tiles[3].goingThrough=1;
-	m->tiles[4].goingThrough=1;
+	m->tiles[0].solid=0;
+	m->tiles[1].solid=1;
+	m->tiles[2].solid=1;
+	m->tiles[3].solid=0;
+	m->tiles[4].solid=0;
 
     return m;
 }
@@ -129,12 +129,13 @@ void initBanana(typ_map *m)
 	int b=m->height;
 	int c=0;
 	int d=0;
+	m->banana[5][36]=1;
     for(int i=0;i<bananaNB;i++)
     {
         a-=2; b-=3; c+=2; d+=3;
 		x=newRandomNumber(c, a);
         y=newRandomNumber(d, b);
-        m->used[x][y]=1;
+        m->banana[x][y]=1;
     }
 }
 
@@ -176,7 +177,7 @@ typ_map* loadMap(char *level)
         {
             fscanf(F,"%d ",&tmp);
             m->matrice[j][i]=tmp;
-            m->used[j][i]=0;
+            m->banana[j][i]=0;
         }
     }
 	fclose(F);
@@ -187,15 +188,20 @@ typ_map* loadMap(char *level)
 //  Display map.
 // ----------------------------------------------------
 
-void printMap(typ_map *m){
+void printMap(typ_map *m)
+{
     int i,j;
     for(i=0; i<m->height; i++)
     {
         for(j=0; j<m->width; j++)
         {
-            printf("%d",m->used[j][i]);
+            //printf("%d",m->banana[j][i]);
+			if(m->banana[j][i]==1)
+			{
+				printf("%d,%d\n",j,i);
+			}
         }
-        printf("\n");
+        //printf("\n");
     }
 }
 
@@ -209,7 +215,7 @@ void drawMap(typ_map *m)
 	minY=m->yscroll/Square_size-1;
     maxX=(m->xscroll+WIDTH)/Square_size;
     maxY=(m->yscroll+HEIGHT)/Square_size;
-	
+
 	for(i=minX; i<=maxX; i++)
 	{
 		for(j=minY; j<=maxY; j++)
@@ -233,29 +239,31 @@ void drawMap(typ_map *m)
 	}
 }
 
+
 void drawBanana(typ_map *m)
 {
 	int i,j;
-	m->used[5][5]=1;
-	for(i=0; i<m->width; i++)
+	int minX, maxX, minY, maxY;
+	minX=m->xscroll/Square_size-1;
+	minY=m->yscroll/Square_size-1;
+    maxX=(m->xscroll+WIDTH)/Square_size;
+    maxY=(m->yscroll+HEIGHT)/Square_size;
+
+	for(i=minX; i<=maxX; i++)
 	{
-		for(j=0; j<m->height; j++)
+		for(j=minY; j<=maxY; j++)
 		{
-			
-			if(m->used[i][j]==0)
+			if (i>0 && i<m->width && j>0 && j<m->height)
 			{
-				glPushMatrix(); // Save current modelview matrix to a stack
-				glPopMatrix(); // Load current modelview matrix from a stack
-			}
-			
-			if(m->used[i][j]==1)
-			{
-				glPushMatrix();
-				glTranslatef(i*Square_size-m->xscroll,j*Square_size-m->yscroll,0.0f);
-					glBindTexture(GL_TEXTURE_2D, m->tiles[4].texID); // bind our texture.
-					drawRect(0,0,Square_size,Square_size);
-					glBindTexture(GL_TEXTURE_2D, 0);
-				glPopMatrix();
+				if(m->banana[i][j]==1)
+				{
+					glPushMatrix();
+						glTranslatef(i*Square_size-m->xscroll, j*Square_size-m->yscroll,0.0f);
+						glBindTexture(GL_TEXTURE_2D, m->tiles[4].texID); // bind our texture.
+						drawRect(0,0,Square_size,Square_size);
+						glBindTexture(GL_TEXTURE_2D, 0);
+					glPopMatrix();
+				}
 			}
 		}
 	}
@@ -267,23 +275,23 @@ void drawBanana(typ_map *m)
 
 void freeMap(typ_map *m)
 {
-	
+
 	if(m->tiles!=NULL){
-		glDeleteTextures(1,&m->tiles[0].texID);  // Delete The Shader Texture.
-		glDeleteTextures(1,&m->tiles[1].texID);
-		glDeleteTextures(1,&m->tiles[2].texID);
-		glDeleteTextures(1,&m->tiles[3].texID);
-		glDeleteTextures(1,&m->tiles[4].texID);
-		
-		free(m->tiles);
+			glDeleteTextures(1,&m->tiles[0].texID);  // Delete The Shader Texture.
+			glDeleteTextures(1,&m->tiles[1].texID);
+			glDeleteTextures(1,&m->tiles[2].texID);
+			glDeleteTextures(1,&m->tiles[3].texID);
+			glDeleteTextures(1,&m->tiles[4].texID);
+
+			free(m->tiles);
 	}
 	if(m!=NULL){
         for(int i = 0; i < m->width; i++){
             free(m->matrice[i]);
-            free(m->used[i]);
+            free(m->banana[i]);
         }
         free(m->matrice);
-        free(m->used);
+        free(m->banana);
         free(m);
     }
 }
@@ -320,7 +328,7 @@ int main(int argc, char *argv[])
   InitIL(); // Our own DevIL initialization
 #endif
     m=loadMap("../../data/matrice/niveau3.lvl");
-	
+
 	glutDisplayFunc(display); // Register callback handler for window re-paint event.
 	glutReshapeFunc(reshape);
 	glEnable(GL_TEXTURE_2D);
@@ -330,9 +338,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef _MAP_bis
 int main(int argc, char *argv[])
-{	
+{
 	typ_map *m=loadMap("../../data/matrice/niveau1.lvl");
-	
+
 	printMap(m);
 	printf("width = %d\n",m->width);
 	printf("height = %d\n",m->height);

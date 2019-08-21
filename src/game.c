@@ -46,10 +46,9 @@
 //  global variables.
 // ----------------------------------------------------
 GLuint window, window2;
-int v=1;
 
 typ_state state=MENU; // to init game state.
-typ_state selectedMenu;
+typ_state selectedMenu=GAME;
 typ_action action=RIGHT; // to init game menu.
 
 typ_data *L=NULL; // list to manage Game Data.
@@ -58,7 +57,7 @@ typ_game *g=NULL;
 typ_character *c=NULL;
 typ_character *e=NULL;
 typ_object *o=NULL;
-
+typ_decor *d=NULL;
 GLboolean lauded=0;
 GLboolean cleaned=0;
 
@@ -171,6 +170,23 @@ typ_character *createEnnemy(void)
     return e;
 }
 
+typ_decor *createDecor(void)
+{
+    typ_decor *d;
+    d=malloc(sizeof(typ_decor));
+    if(e==NULL){
+        fprintf(stderr, "Error : dynamic allocation problem.\n");
+      	exit(EXIT_FAILURE);
+    }
+    d->spiderWeb=malloc(sizeof(*e->posChar));
+    if(e->posChar==NULL){
+        free(d);
+        fprintf(stderr, "Error : dynamic allocation problem.\n");
+      	exit(EXIT_FAILURE);
+    }
+    return d;
+}
+
 // ----------------------------------------------------
 //  Game initialisation.
 // ----------------------------------------------------
@@ -178,18 +194,21 @@ typ_character *createEnnemy(void)
 void InitGame(void)
 {
     texID=loadTex(); // load texture.
-    char *level = "../../data/matrice/niveau3.lvl"; // new map.
+    char *level = "../../data/matrice/niveau6.lvl"; // new map.
     m=loadMap(level); //load the map.
     L=newlist();
 
     initBanana(m);
+    printMap(m);
 
     g=createGame("Monkey"); // new game.
     c=createCharacter(5);
     //o=createObject();
     e=createEnnemy();
+    d=createDecor();
     //printf("Bonjour %s, votre score est actuellement de %d.",g->username, g->score);
 
+    g->score=0;
     // init player.
     c->live=100;
     c->posChar->sizeX=15;
@@ -199,7 +218,9 @@ void InitGame(void)
     //c->posChar->posY=m->height - 2*Square_size - c->posChar->sizeY;
     c->texSelected=1;
     c->textureDelay=0;
+    c->keyTextureDelay=0;
     c->action=LEFT;
+    c->control=CHARACTER;
     c->lvlLose=0;
     /*
     // init object.
@@ -211,14 +232,24 @@ void InitGame(void)
     }
     */
     // init ennemy.
-    e->posChar->posX=-10;
+    e->posChar->sizeX=30;
+    e->posChar->sizeY=30;
+    e->posChar->posX=WIDTH/2 - 20;
+    //e->posChar->posY=m->height - c->posChar->sizeX - 2*Square_size;
+    e->posChar->posY=HEIGHT/2;
     e->texSelected=10;
+    e->textureDelay=0;
     e->action=LEFT;
     e->live=100;
 
     c->v_x=v_air;
     c->v_y=v_jump;
     c->isJumping=false;
+
+    d->spiderWeb->posX=20;
+    d->spiderWeb->posY=150;
+    d->spiderWeb->sizeX=100;
+    d->spiderWeb->sizeY=100;
 }
 
 // ----------------------------------------------------
@@ -255,29 +286,30 @@ void vDisplay(void)
                 background();
                 drawMap(m);
                 drawBanana(m);
-                if(c->action!=NONE)
-                {
-                    glPushMatrix();
-                        drawSleep(20,20,64,64,0);
-                    glPopMatrix();
-                }
+
                 glPushMatrix();
-                    //glColor3f(0.2f,0.5f,1.0f);
+                    glBindTexture(GL_TEXTURE_2D, texID[18]);
+                        drawTrellis(d->spiderWeb->posX - m->xscroll,d->spiderWeb->posY - m->yscroll,d->spiderWeb->sizeX,d->spiderWeb->sizeY);
                     glBindTexture(GL_TEXTURE_2D, 0);
-                        glBindTexture(GL_TEXTURE_2D, texID[c->texSelected]);
-                        drawChar(c->posChar->posX, c->posChar->posY, c->posChar->sizeX, c->posChar->sizeY, c->action);
+                glPopMatrix();
+
+                glPushMatrix();
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                    glBindTexture(GL_TEXTURE_2D, texID[c->texSelected]);
+                        drawChar(c->posChar->posX-m->xscroll, c->posChar->posY-m->yscroll, c->posChar->sizeX, c->posChar->sizeY, c->action);
                     glBindTexture(GL_TEXTURE_2D, 0);
                 glPopMatrix();
 
                 glPushMatrix();
                     glBindTexture(GL_TEXTURE_2D, texID[e->texSelected]); // snake.
-                        drawChar(e->posChar->posX, e->posChar->posY, 30, 30, e->action);
+                        drawChar(e->posChar->posX-m->xscroll, e->posChar->posY-m->yscroll, e->posChar->sizeX, e->posChar->sizeY, e->action);
                     glBindTexture(GL_TEXTURE_2D, 0);
                 glPopMatrix();
-                g->score=102;
+
                 glPushMatrix();
-                        glBindTexture(GL_TEXTURE_2D, 0);
+                    glBindTexture(GL_TEXTURE_2D, 0);
                         drawGame(0.0, HEIGHT-Square_size, WIDTH, Square_size, g->score);
+                    glBindTexture(GL_TEXTURE_2D, 0);
                 glPopMatrix();
 
 				break;
@@ -289,6 +321,9 @@ void vDisplay(void)
                 break;
             case SAVE:
                 saveDisplay(L);
+                break;
+            case EXIT:
+                keyPressed(ESCAPE,0,0);
                 break;
 			default :
                 printf("Error : no case.");
@@ -434,7 +469,8 @@ void saveSortedListGamePlays(typ_game *g)
 //  Key management.
 // ----------------------------------------------------
 
-void changeGameState(typ_state newState) {
+void changeGameState(typ_state newState)
+{
     state = newState;
     if (state == GAME) {
         //game();
@@ -455,7 +491,7 @@ void keyPressed(unsigned char key, int x, int y)
         saveGamePlay(g);
         printf("Game saved.\n");
         */
-        freeAll(); // freeing all global variables.
+        //freeAll(); // freeing all global variables.
         exit(1); // exit the program...normal termination.
         break;
     default:
@@ -483,7 +519,6 @@ void specialKeyPressed(int key, int x, int y)
                         selectedMenu--;
                     else
                         selectedMenu=1;
-
                     break;
                 case GLUT_KEY_RIGHT:
                     changeGameState(selectedMenu);
@@ -496,40 +531,35 @@ void specialKeyPressed(int key, int x, int y)
             }
             break;
         case GAME:
+            c->control=CHARACTER;
             switch (key)
-	        {
+	          {
                 case GLUT_KEY_DOWN:
                     c->action=DOWN;
                     c->posChar->posY++;
-                    //printf("DOWN: %d\n",collision(c,m));
                     break;
                 case GLUT_KEY_UP:
-                    c->action=UP;
-                    c->isJumping=true;
-                    c->posChar->posY--;
-                    c->v_y = v_jump;
-                    //printf("UP: %d\n",collision(c,m));
+                    if(!c->isJumping) // jump only once time.
+                    {
+                        c->action=UP;
+                        c->isJumping=true;
+                        c->posChar->posY--;
+                        c->v_y = v_jump;
+                    }
                     break;
                 case GLUT_KEY_RIGHT:
                     c->action=RIGHT;
                     c->posChar->posX++;
-                    //printf("RIGHT: %d\n",collision(c,m));
-
+                    c->keyTextureDelay=0; // changes enabled while 30ms aren't flying.
                     if(c->isJumping==true)
-                    {
                         c->posChar->posX += c->v_x; // Direction while the jump.
-                    }
                     break;
                 case GLUT_KEY_LEFT:
                     c->action=LEFT;
                     c->posChar->posX--;
-                    //printf("LEFT: %d\n",collision(c,m));
-
+                    c->keyTextureDelay=0;
                     if(c->isJumping==true)
-                    {
-                        c->posChar->posX -= c->v_x; // Direction while the jump.
-                    }
-
+                        c->posChar->posX-=c->v_x; // Direction while the jump.
                     break;
                 default:
                     //c->action=NONE;
@@ -557,7 +587,7 @@ void specialKeyPressed(int key, int x, int y)
 //  Updating the game.
 // ----------------------------------------------------
 
-/*
+
 void updateCharacter()
 {
     //int temp;
@@ -576,42 +606,28 @@ void updateCharacter()
     if(c->posChar->posY<0){
         c->posChar->posY=0;
     }
-
-    // collisions.
 }
-*/
+
 void updateScroll(void)
 {
-    // Mapscroll.
     m->xscroll = c->posChar->posX + c->posChar->sizeX/2 - WIDTH/2;
     m->yscroll = c->posChar->posY + c->posChar->sizeY/2 - HEIGHT/2;
 
-    if(m->xscroll<0)
+    if(m->xscroll<0){
         m->xscroll=0;
-    if(m->yscroll<0)
-        m->yscroll=0;
-/*
-    if(c->posChar->posX + c->posChar->sizeX/2 > WIDTH/2){
-
-        if(c->action==LEFT)
-            test--;
-        else if(c->action==RIGHT)
-            test++;
-        else
-
-        m->xscroll += test;
     }
-*/
-	if(m->xscroll>m->width*Square_size-WIDTH-1)
+    if(m->yscroll<0){
+        m->yscroll=0;
+    }
+	  if(m->xscroll>m->width*Square_size-WIDTH-1)
         m->xscroll=m->width*Square_size-WIDTH-1;
-	if(m->yscroll>m->height*Square_size-HEIGHT-1)
+	  if(m->yscroll>m->height*Square_size-HEIGHT-1)
         m->yscroll=m->height*Square_size-HEIGHT-1;
-
 }
 
 void updateRender(void)
 {
-    if(c->textureDelay==5)
+    if(c->textureDelay==5 && c->isJumping==0) // every 5 mili-seconds.
     {
         c->texSelected++;
         if(c->texSelected==10)
@@ -620,40 +636,41 @@ void updateRender(void)
         }
         c->textureDelay=0;
     }
-    c->textureDelay++;
-}
 
-void updateSnake(void)
-{
-    // testing limits.
-    switch(v)
+    if(e->textureDelay==5)
     {
-    case 1:
-        if(e->posChar->posX<HEIGHT){
-            e->posChar->posX+=1;
-            e->action=RIGHT;
+        e->texSelected++;
+        if(e->texSelected==13)
+        {
+            e->texSelected=10; // Texture indice for the monkey.
         }
-        else
-            v=-1;
-        break;
-    case -1:
-        if(e->posChar->posX>-10){
-            e->posChar->posX-=5;
-            e->action=LEFT;
-        }
-        else
-            v=1;
-        break;
-    }
-    // Texture ID switching.
-    e->texSelected++;
-    if(e->texSelected>12){
-        e->texSelected=10;
+        e->textureDelay=0;
     }
 
-    //glutTimerFunc(15, timer, 0);
+    e->textureDelay++;
 
+    if(c->keyTextureDelay>10)
+    {
+        c->texSelected=1; // sitting position.
+        c->keyTextureDelay=31; // delay enabled.
+    }
+    else
+    {
+        c->textureDelay++;
+        c->keyTextureDelay++;
+    }
+
+
+    if(c->isJumping==true && c->v_y<0)
+    {
+      c->texSelected=19; // jumping texture.
+    }
+    else if(c->isJumping==true && c->v_y>=0)
+    {
+      c->texSelected=20; // falling texture.
+    }
 }
+
 
 // ----------------------------------------------------
 //  Timer.
@@ -663,9 +680,9 @@ void updateSnake(void)
 void Loop()
 {
     updateScroll();
-    updateSnake();
+    updateSnake(e,c,m);
     updateRender();
-    updatePosition(c,m);
+    updatePosition(c,m,d,g);
 }
 
 /* Pre : integer.
@@ -686,8 +703,8 @@ void timer(int value)
         case EXIT:
             break;
     }
-    //glutPostRedisplay();
-    glutPostWindowRedisplay(window);
+    glutPostRedisplay();
+    //glutPostWindowRedisplay(window);
     //glutPostWindowRedisplay(window2);
     glutTimerFunc(TIMER, timer, 0);
 }
@@ -700,7 +717,7 @@ void freeTextureGame(GLuint *texID)
 {
     if(texID){
         glDeleteTextures(texNB, texID);
-        texID=0;
+        //texID=0;
     }
 }
 
@@ -708,7 +725,7 @@ void freeGame(typ_game *g)
 {
     if(g){
         free(g);
-        g=0;
+        //g=0;
     }
 }
 
@@ -716,14 +733,26 @@ void freeCharacter(typ_character *c)
 {
     if(c){
         free(c);
-        c=0;
+        //c=0;
+    }
+    if(e){
+        free(e);
+        //e=0;
+    }
+}
+
+void freeDecor(typ_decor *d)
+{
+    if(d){
+        free(d);
+        //g=0;
     }
 }
 
 void freeAll(void)
 {
-    // delete pointer.
     freeCharacter(c);
+    freeDecor(d);
     freeGame(g);
     // delete textures.
     if (!cleaned){

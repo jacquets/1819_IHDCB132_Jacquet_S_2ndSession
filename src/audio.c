@@ -22,11 +22,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "audio.h"
+
+#ifdef _AUDIO_ENABLED
+
 #include <FMOD/fmod.h>
 #include <FMOD/fmod_errors.h>
 #include <string.h>
-
-#include "audio.h"
 
 // Declaractions.
 FMOD_SYSTEM *sys;
@@ -98,6 +100,8 @@ void FMOD_Version()
         printf("Error!  You are using an old version of FMOD %08x.  This program requires %08x\n", version, FMOD_VERSION);
     }
 }
+#endif // audio enabled.
+
 
 #ifdef _FMOD
 void display(void){
@@ -137,6 +141,5 @@ int main(int argc, char *argv[])
 
   glutMainLoop();
     return 0;
-
 }
-#endif
+#endif // demo fmod.

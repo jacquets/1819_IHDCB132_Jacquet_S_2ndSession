@@ -77,6 +77,7 @@ GLuint ImageLoad(char *filename)
       SOIL_CREATE_NEW_ID,
       SOIL_FLAG_POWER_OF_TWO
       | SOIL_FLAG_MULTIPLY_ALPHA
+      | SOIL_FLAG_INVERT_Y
       // |  SOIL_FLAG_COMPRESS_TO_DXT
   );
   if(TexID==0)

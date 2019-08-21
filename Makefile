@@ -4,7 +4,6 @@
 #		Created:  23-06-19 | Revision: 30-06-19.
 #		Compiler:  GNU Compiler - GCC.
 #		Author:  Samuel Jacquet
-#		chose à faire : del et zip sur Makefile, installation sur linux.
 #
 
 # -------------------------------------------------------------------
@@ -27,7 +26,7 @@ ifeq ($(OS),Windows_NT)
 else
 	INC_PATH = include
 	LIB_PATH = lib/linux
-	FMOD_PATH = lib/linux/libfmod.so
+	# FMOD_PATH = lib/linux/libfmod.so
 	EXE = release/linux/prog
 endif
 
@@ -46,7 +45,7 @@ LDFLAGS = -L $(LIB_PATH)
 ifeq ($(OS),Windows_NT)
 	CFLAGS += -lfreeglut -lopengl32 -lglu32 -lDevIL -lILU -lILUT -lfmod_vc
 else
-	CFLAGS += -lglut -lGL -lGLU -lIL -lILU -lILUT -lSOIL -lfmod
+	CFLAGS += -lglut -lGL -lGLU -lIL -lILU -lILUT -lSOIL -lm #-lfmod
 endif
 
 # GDB debugger options
@@ -107,7 +106,7 @@ vars:
 	@echo FMOD_PATH = $(FMOD_PATH)
 	@echo EXE = $(EXE)
 
-.PHONY : clean
+.PHONY : clean $(FMOD_PATH)
 # Clean up all build targets and executable file (rm command for Linux).
 
 clean:
@@ -130,6 +129,12 @@ endif
 link:
 	ldd prog
 
+# Trying to generate a link with fmod.
+test:
+	sudo chown root /home/sam/Bureau/1908/190819/lib/linux/libfmod.so
+	sudo chgrp root /home/sam/Bureau/1908/190819/lib/linux/libfmod.so
+	sudo mkdir /usr/include/fmod
+	sudo cp /home/sam/Bureau/1908/190819/include/FMOD/fmod.h /home/sam/Bureau/1908/190819/include/FMOD/fmod_errors.h /usr/include/fmod
 # -------------------------------------------------------------------
 #  Other compilation command.
 # -------------------------------------------------------------------
@@ -141,7 +146,7 @@ ifeq ($(OS),Windows_NT)
 	@echo FMOD compilation command (Windows).
 	gcc src\audio.c -o release\win32\song -D_FMOD $(CFLAGS) $(FMOD_PATH) $(LDFLAGS) ${DEBUG_FLAG}
 else
-	gcc src/audio.c -o song -D_FMOD -I./include/ -L $(FMOD_PATH) -lfmod -Wall -std=c99
+	gcc src/audio.c -o release/linux/song -D_FMOD $(CFLAGS) $(LDFLAGS) -ln -s libfmod.so -Wall -std=c99
 endif
 
 render:
@@ -158,7 +163,7 @@ ifeq ($(OS),Windows_NT)
 	@echo Draw compilation command (Windows).
 	gcc src/draw.c src/write.c src/render.c -o release\win32\prog -D_DRAW $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
 else
-	
+
 endif
 
 random:
@@ -166,7 +171,7 @@ ifeq ($(OS),Windows_NT)
 	@echo Random compilation command (Windows).
 	gcc src/draw.c src/write.c src/render.c -o release\win32\prog -D_RANDOM $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
 else
-	
+
 endif
 
 score:
