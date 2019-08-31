@@ -61,9 +61,18 @@ void bananaCollision(typ_character *c, typ_map *m, typ_game *g)
     return;
 }
 
-void updatePosition(typ_character *c, typ_map *m, typ_decor *d, typ_game *g)
+void snakeCollision(typ_character *c, typ_character *e, typ_map *m, typ_game *g)
 {
+    int res=CheckCollision(c->posChar, e->posChar);
+    if(res==1)
+    {
+        c->live--;
+    }
+    return;
+}
 
+void updatePosition(typ_character *c, typ_character *e, typ_map *m, typ_decor *d, typ_game *g)
+{
     if(collision(c->posChar,m))
     {
         if(c->isJumping==true)
@@ -88,18 +97,18 @@ void updatePosition(typ_character *c, typ_map *m, typ_decor *d, typ_game *g)
         c->posChar->posY += c->v_y; // incrementation of the position.
     }
     bananaCollision(c, m, g);
+    snakeCollision(c, e, m, g);
 }
 
 int collision(typ_position* test, typ_map* m)
 {
     int collision_down/*, collision_up, collision_left, collision_right*/;
     int i=0, j=0, tileIndice;
-    int minX, maxX;
-    //int minY, maxY;
+    int minX, maxX, minY, maxY;
   	minX = test->posX / Square_size;
-  	//minY = test->posY / Square_size;
+  	minY = test->posY / Square_size;
   	maxX = (test->posX + test->sizeX -1) / Square_size;
-  	//maxY = (test->posY + test->sizeY -1) / Square_size;
+  	maxY = (test->posY + test->sizeY -1) / Square_size;
 
 if(test->sizeY + test->posY < m->height * Square_size - 10)
 {
@@ -110,13 +119,12 @@ if(test->sizeY + test->posY < m->height * Square_size - 10)
         tileIndice=m->matrice[i][j];
         collision_down=(m->tiles[tileIndice].solid);
     }
-    /*
     // If we hit a block to the left.
     i=(test->posX -1) / Square_size;
     for(j=minY;j<=maxY;j++)
     {
         tileIndice = m->matrice[i][j];
-        collision_left=(m->tiles[tileIndice].solid);
+        //collision_left=(m->tiles[tileIndice].solid);
         j=maxY+1;
     }
     // If we hit a block to the right.
@@ -124,7 +132,7 @@ if(test->sizeY + test->posY < m->height * Square_size - 10)
     for(j=minY;j<=maxY;j++)
     {
         tileIndice = m->matrice[i][j];
-        collision_right=(m->tiles[tileIndice].solid);
+        //collision_right=(m->tiles[tileIndice].solid);
         j=maxY+1;
     }
     // If we hit a block above.
@@ -132,24 +140,23 @@ if(test->sizeY + test->posY < m->height * Square_size - 10)
     for(i=minX;i<=maxX;i++) //Si il y a un bloc au dessus
     {
         tileIndice = m->matrice[i][j];
-        collision_up=(m->tiles[tileIndice].solid);
+        //collision_up=(m->tiles[tileIndice].solid);
     }
-    */
 }
 return collision_down /*|| collision_left || collision_right || collision_up*/;
 }
 
-void updateTests(typ_character* c, typ_map* m)
+void updateLimits(typ_character* c, typ_map* m)
 {
     // bord gauche
-    if (c->posChar->posX-1<0) //Si on touche le bord gauche de la map
+    if (c->posChar->posX < Square_size) //Si on touche le bord gauche de la map
     {
-        c->posChar->posX--;
+        c->posChar->posX = Square_size + 1;
     }
     // bord droit
-    if (c->posChar->posX + c->posChar->sizeY >= m->width*Square_size-2)
+    if (c->posChar->posX >= m->width*Square_size - c->posChar->sizeX - Square_size)
     {
-        c->posChar->posX--;
+        c->posChar->posX = m->width*Square_size - c->posChar->sizeX - Square_size;
     }
     // bord haut
     if (c->posChar->posY<0)
@@ -182,22 +189,38 @@ void updateTests(typ_character* c, typ_map* m)
 
 void updateSnake(typ_character *e, typ_character *c, typ_map *m)
 {
-    // testing limits.
-    if(e->action==RIGHT)
+    int res=CheckCollision(c->posChar, e->posChar);
+    if(res==1)
     {
-      if(e->posChar->posX < c->posChar->posX)
-          e->posChar->posX+=1;
-      else
-          e->action=LEFT;
+        if(e->action==RIGHT)
+        {
+            e->posChar->posX-=15;
+            e->action=LEFT;
+        }
+        else if(e->action==LEFT)
+        {
+            e->posChar->posX+=15;
+            e->action=RIGHT;
+        }
     }
-    if(e->action==LEFT)
+    else
     {
-      if(e->posChar->posX > c->posChar->posX)
-          e->posChar->posX-=1;
-      else
-        e->action=RIGHT;
+        // testing limits.
+        if(e->action==RIGHT)
+        {
+          if(e->posChar->posX < m->width * Square_size - e->posChar->sizeX - 1) // don't reach the border right side.
+              e->posChar->posX+=1;
+          else
+              e->action=LEFT;
+        }
+        if(e->action==LEFT)
+        {
+          if(e->posChar->posX > 0)
+              e->posChar->posX-=1;
+          else
+            e->action=RIGHT;
+        }
     }
-
 
     // Ground collision else gravity.
     int minX=(e->posChar->posX + e->posChar->sizeX/2) / Square_size;
@@ -253,7 +276,7 @@ bool isColl;
     #define v_jump -4
     #define v_air 1.5
     /* initialisation des vitesses */
-    double v_grav = 0.08;
+    double v_gravity = 0.08;
     double v_x = v_air;
     double v_y = v_jump;
 
@@ -278,7 +301,7 @@ void updateTest()
     }
     else
     {
-        v_y += v_grav; /* evolution de la vitesse */
+        v_y += v_gravity; /* evolution de la vitesse */
         one.posY += v_y; /* evolution de la position */
     }
 }

@@ -113,7 +113,7 @@ typ_map *createMap(int w, int h)
 	m->tiles[3].texID=ImageLoad(MAP4);
 	m->tiles[4].texID=ImageLoad(BANANA);
 
-	m->tiles[0].solid=0;
+	m->tiles[0].solid=0; // to determine if Monkey can go though the block in front of him.
 	m->tiles[1].solid=1;
 	m->tiles[2].solid=1;
 	m->tiles[3].solid=0;

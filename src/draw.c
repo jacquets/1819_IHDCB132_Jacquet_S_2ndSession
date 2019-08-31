@@ -78,6 +78,8 @@ GLuint *loadTex(void)
     texID[19]=ImageLoad(JUMP1);
     texID[20]=ImageLoad(JUMP2);
 
+    texID[21]=ImageLoad(LIVE);
+
     return texID;
 }
 

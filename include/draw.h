@@ -36,7 +36,9 @@
 #define JUMP1 "../../data/image/JB_31.png"
 #define JUMP2 "../../data/image/JB_32.png"
 
-#define texNB 21
+#define LIVE "../../data/image/vie/coeur.png"
+
+#define texNB 22
 #define bufferNB 10
 
 #include "map.h"

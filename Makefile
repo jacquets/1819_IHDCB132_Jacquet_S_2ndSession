@@ -215,7 +215,8 @@ ifeq ($(OS),Windows_NT)
 	@echo Collision test.
 	gcc src/event.c src/game.c src/draw.c src/render.c src/map.c src/write.c src/audio.c src/timeTM.c src/score.c -o release\win32\prog -D_EVENT $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
 else
-
+	@echo Collision test.
+	gcc src/event.c src/game.c src/draw.c src/render.c src/map.c src/write.c src/audio.c src/timeTM.c src/score.c -o release/linux/prog -D_EVENT $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
 endif
 
 

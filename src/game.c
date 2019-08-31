@@ -210,11 +210,11 @@ void InitGame(void)
 
     g->score=0;
     // init player.
-    c->live=100;
+    c->live=10;
     c->posChar->sizeX=15;
     c->posChar->sizeY=20;
     c->posChar->posX=WIDTH/2;
-    c->posChar->posY=m->height*Square_size - c->posChar->sizeX - 2*Square_size;
+    c->posChar->posY=m->height*Square_size - c->posChar->sizeX - 2*Square_size - 15;
     //c->posChar->posY=m->height - 2*Square_size - c->posChar->sizeY;
     c->texSelected=1;
     c->textureDelay=0;
@@ -240,7 +240,7 @@ void InitGame(void)
     e->texSelected=10;
     e->textureDelay=0;
     e->action=LEFT;
-    e->live=100;
+    e->live=10;
 
     c->v_x=v_air;
     c->v_y=v_jump;
@@ -286,7 +286,6 @@ void vDisplay(void)
                 background();
                 drawMap(m);
                 drawBanana(m);
-
                 glPushMatrix();
                     glBindTexture(GL_TEXTURE_2D, texID[18]);
                         drawTrellis(d->spiderWeb->posX - m->xscroll,d->spiderWeb->posY - m->yscroll,d->spiderWeb->sizeX,d->spiderWeb->sizeY);
@@ -311,16 +310,27 @@ void vDisplay(void)
                         drawGame(0.0, HEIGHT-Square_size, WIDTH, Square_size, g->score);
                     glBindTexture(GL_TEXTURE_2D, 0);
                 glPopMatrix();
-
+                glPushMatrix();
+                int i=10;
+                while(i>=10-c->live)
+                {
+                    glBindTexture(GL_TEXTURE_2D, texID[21]);
+                        drawRect(WIDTH-i*Square_size-2*Square_size, HEIGHT-0.8*Square_size, 73/10, 66/10);
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                    i--;
+                }
+                glPopMatrix();
 				break;
 			case RULES:
                 rulesDisplay();
                 break;
             case SCORE:
                 scoreDisplay(L);
+
                 break;
             case SAVE:
                 saveDisplay(L);
+
                 break;
             case EXIT:
                 keyPressed(ESCAPE,0,0);
@@ -329,22 +339,41 @@ void vDisplay(void)
                 printf("Error : no case.");
                 break;
 		}
+    if(c->live==0)
+    {
+        glPushMatrix();
+          loseDisplay();
+        glPopMatrix();
+    }
+    if(g->score==5)
+    {
+        glPushMatrix();
+          winDisplay();
+        glPopMatrix();
+    }
     //glFlush();
     glBindTexture(GL_TEXTURE_2D,0);
     glutSwapBuffers();  // We use double buffering, so swap the buffers.
-/*
-    // None activity manage.
-    if(c->action!=NONE)
-        c->changingtime++;
-    else
-        c->changingtime=0;
-    if(c->changingtime==1000)
+    /*
+    if(c->live==0)
     {
-        c->action=NONE;
-        c->changingtime=0;
+        saveSortedListGamePlays(g);
+        saveGamePlay(g);
+        printf("Game saved.\n");
+        loseDisplay();
+        //freeAll(); // freeing all global variables.
+        //changeGameState(EXIT);
     }
-    if(c->action==NONE)
-        c->texSelected=0;*/
+    if(g->score==5)
+    {
+        saveSortedListGamePlays(g);
+        saveGamePlay(g);
+        printf("Game saved.\n");
+        winDisplay();
+        //freeAll(); // freeing all global variables.
+        //changeGameState(EXIT);
+    }
+    */
 }
 
 void vDisplay2(void)
@@ -504,7 +533,7 @@ void specialKeyPressed(int key, int x, int y)
     switch (state)
 	{
         case MENU:
-            switch (key)
+          switch (key)
 	        {
                 case GLUT_KEY_DOWN:
 
@@ -580,7 +609,6 @@ void specialKeyPressed(int key, int x, int y)
             printf("Key %d pressed. No action there yet.",key);
             break;
     }
-
 }
 
 // ----------------------------------------------------
@@ -627,6 +655,10 @@ void updateScroll(void)
 
 void updateRender(void)
 {
+    if(c->textureDelay>20)
+    {
+        c->textureDelay=0;
+    }
     if(c->textureDelay==5 && c->isJumping==0) // every 5 mili-seconds.
     {
         c->texSelected++;
@@ -636,7 +668,6 @@ void updateRender(void)
         }
         c->textureDelay=0;
     }
-
     if(e->textureDelay==5)
     {
         e->texSelected++;
@@ -660,7 +691,6 @@ void updateRender(void)
         c->keyTextureDelay++;
     }
 
-
     if(c->isJumping==true && c->v_y<0)
     {
       c->texSelected=19; // jumping texture.
@@ -682,7 +712,8 @@ void Loop()
     updateScroll();
     updateSnake(e,c,m);
     updateRender();
-    updatePosition(c,m,d,g);
+    updatePosition(c,e,m,d,g);
+    updateLimits(c,m);
 }
 
 /* Pre : integer.
