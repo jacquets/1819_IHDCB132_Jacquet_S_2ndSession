@@ -106,10 +106,10 @@ void display(void){
   //...
   glPushMatrix();
   glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 1.0f);glVertex2f(0.0f,   0.0f);
-    glTexCoord2f(1.0f, 1.0f);glVertex2f(128.0f, 0.0f);
-    glTexCoord2f(1.0f, 0.0f);glVertex2f(128.0f, 128.0f);
-    glTexCoord2f(0.0f, 0.0f);glVertex2f(0.0f,   128.0f);
+    glTexCoord2f(0.0f, 1.0f);glVertex2f(0.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);glVertex2f(400.0f, 0.0f);
+    glTexCoord2f(1.0f, 0.0f);glVertex2f(400.0f, 400.0f);
+    glTexCoord2f(0.0f, 0.0f);glVertex2f(0.0f, 400.0f);
   glEnd();
   glPopMatrix();
   glutSwapBuffers();
@@ -126,12 +126,13 @@ void reshape(int width, int height){
 int main(int argc,char *argv[]){
   glutInit(&argc,argv); // Initialize GLUT.
   glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE); // Enable double buffered mode.
+  glutInitWindowSize(400, 400);
   glutCreateWindow("TEST"); // Create window with the given title.
   GLuint Texture[5]={0};
 #ifdef _WIN32
   InitIL(); // Our own DevIL initialization
 #endif
-  Texture[0]=ImageLoad("../../data/images/img_test.bmp");
+  Texture[0]=ImageLoad("../../data/image/img_test.bmp");
   glBindTexture(GL_TEXTURE_2D,Texture[0]); // bind our texture.
   glutDisplayFunc(display); // Register callback handler for window re-paint event.
   glutReshapeFunc(reshape);

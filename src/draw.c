@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "draw.h"
 #include "game.h"
@@ -33,6 +34,25 @@
 #include "map.h"
 #include "render.h"
 #include "score.h"
+
+// ----------------------------------------------------
+//  Jump and collision demonstration.
+// ----------------------------------------------------
+
+#include "event.h"
+
+#define v_jump_cste -4
+#define v_air_cste 1.5
+
+bool jumping;
+bool colliding;
+double vx=v_air_cste;
+double vy=v_jump_cste;
+double v_gravity_cste=0.08;
+
+typ_position a1={.posX=140,.posY=260,.sizeX=20,.sizeY=20};
+typ_position b1={.posX=50,.posY=100,.sizeX=20,.sizeY=20};
+typ_position c1={.posX=0,.posY=280,.sizeX=300,.sizeY=20};
 
 // ----------------------------------------------------
 //  Global variables environement.
@@ -164,7 +184,7 @@ void background(void)
 void menuDisplay(void)
 {
     glBegin(GL_LINES);
-        glColor3f(0.8f, 0.0f, 0.8f);
+        glColor3f(0.1f, 0.4f, 0.6f);
         glVertex2d(Square_size, HEIGHT-5*Square_size); // first point.
         glVertex2d(WIDTH-5*Square_size, HEIGHT-5*Square_size); // second point.
     glEnd();
@@ -180,27 +200,99 @@ void menuDisplay(void)
     vBitmapOutput(Square_size*20,Square_size*18,"SCORE",GLUT_BITMAP_HELVETICA_18);
     vBitmapOutput(Square_size*15,Square_size*13,"RULES",GLUT_BITMAP_HELVETICA_18);
     vBitmapOutput(Square_size*10,Square_size*8,"GAME",GLUT_BITMAP_HELVETICA_18);
+    vBitmapOutput(Square_size*10,Square_size*28,"DIAPORAMA",GLUT_BITMAP_HELVETICA_18);
 }
 
-void scoreDisplay(typ_data *L)
+// Just for the presentation.
+void keyDiaporama(int key)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-		glBegin(GL_QUADS);
-            glColor3f(0.2f,0.5f,1.0f);
+    switch(key)
+    {
+        case GLUT_KEY_RIGHT:
+        diaporama++;
+        break;
+        case GLUT_KEY_LEFT:
+        diaporama--;
+        break;
+        default:
+            break;
+    }
+}
+
+void diaporamaDisplay(int diaporama)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glBegin(GL_QUADS);
+        glColor3f(0.2f,0.3f,0.8f);
             glVertex2i(0,0);
             glVertex2i(Square_size*MaxX,0);
             glVertex2i(Square_size*MaxX,Square_size*MaxY);
             glVertex2i(0,Square_size*MaxY);
-            glColor3f(1.0f,1.0f,1.0f);
-		glEnd();
+        glColor3f(1.0f,1.0f,1.0f);
+    glEnd();
+    glBegin(GL_LINES);
+        glColor3f(0.0f, 0.0f, 0.0f);
+            glVertex2d(Square_size, 5*Square_size); // first point.
+            glVertex2d(WIDTH-Square_size, 5*Square_size); // second point.
+        glColor3f(1.0f,1.0f,1.0f);
+    glEnd();
+    vBitmapOutput(Square_size*12,3*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
+    switch(diaporama)
+    {
+        case 0:
+        break;
+        case 1:
+        break;
+        case 2:
+        break;
+        case 3:
+        break;
+    }
+}
+
+void scoreDisplay(typ_data *lptr)
+{
+  	glClear(GL_COLOR_BUFFER_BIT);
+  	glMatrixMode(GL_MODELVIEW);
+  	glLoadIdentity();
+
+    glColor3f(0.5f, 0.5f, 0.5f);
+      drawRect(0.0, 0.0, WIDTH, HEIGHT);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    char buffer[255];
+    int res;
+    /*buffer=malloc(255*sizeof(char*));
+    if(buffer==NULL){
+        fprintf(stderr, "Error : dynamic allocation problem.\n");
+        exit(EXIT_FAILURE);
+    }*/
+
     vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*28,"EXIT",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*23,"SAVE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*18,"SCORE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*13,"RULES",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*8,"GAME",GLUT_BITMAP_HELVETICA_18);
+
+    lptr=readData(SCORES);
+
+    res=sprintf(buffer, "%s score: %d (%d-%d-%d %d:%d:%d)\n",lptr->data->username,lptr->data->score,lptr->data->time[0],lptr->data->time[1],lptr->data->time[2],
+    lptr->data->time[3],lptr->data->time[4],lptr->data->time[5]);
+    printf("%d : %s\n",res,buffer);
+    vBitmapOutput(120,70, buffer,GLUT_BITMAP_HELVETICA_12);
+    memset(buffer, 0, sizeof(*buffer) * 255);
+    lptr = lptr->nextptr;
+
+    res=sprintf(buffer, "%s score: %d\n",lptr->data->username,lptr->data->score);
+    printf("%d : %s\n",res,buffer);
+    vBitmapOutput(120,100, buffer,GLUT_BITMAP_HELVETICA_12);
+    memset(buffer, 0, sizeof(*buffer) * 255);
+    lptr = lptr->nextptr;
+
+    res=sprintf(buffer, "%s score: %d\n",lptr->data->username,lptr->data->score);
+    printf("%d : %s\n",res,buffer);
+    vBitmapOutput(120,130, buffer,GLUT_BITMAP_HELVETICA_12);
+    memset(buffer, 0, sizeof(*buffer) * 255);
+
+    return;
 }
 
 void saveDisplay(typ_data *L)

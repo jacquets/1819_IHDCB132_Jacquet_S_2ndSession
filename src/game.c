@@ -51,7 +51,7 @@ typ_state state=MENU; // to init game state.
 typ_state selectedMenu=GAME;
 typ_action action=RIGHT; // to init game menu.
 
-typ_data *L=NULL; // list to manage Game Data.
+typ_data *scoreList=NULL; // list to manage Game Data.
 typ_map *m=NULL;
 typ_game *g=NULL;
 typ_character *c=NULL;
@@ -60,6 +60,9 @@ typ_object *o=NULL;
 typ_decor *d=NULL;
 GLboolean lauded=0;
 GLboolean cleaned=0;
+GLboolean pause=0;
+
+int diaporama=0;
 
 // ----------------------------------------------------
 //  Initialisation.
@@ -191,15 +194,19 @@ typ_decor *createDecor(void)
 //  Game initialisation.
 // ----------------------------------------------------
 
+bool ok=0;
+
 void InitGame(void)
 {
     texID=loadTex(); // load texture.
     char *level = "../../data/matrice/niveau6.lvl"; // new map.
     m=loadMap(level); //load the map.
-    L=newlist();
+
+    scoreList=readData(SCORES);
+    printList(scoreList);
 
     initBanana(m);
-    printMap(m);
+    //printMap(m); // to display location of some bananas.
 
     g=createGame("Monkey"); // new game.
     c=createCharacter(5);
@@ -221,7 +228,6 @@ void InitGame(void)
     c->keyTextureDelay=0;
     c->action=LEFT;
     c->control=CHARACTER;
-    c->lvlLose=0;
     /*
     // init object.
     for(int i=1; i<=o->objNB; i++){
@@ -258,7 +264,7 @@ void InitGame(void)
 
 void vDisplay(void)
 {
-    glClearColor(0.0f,0.0f,0.0f,0.0f); // Clear to black.
+    //glClearColor(0.0f,0.0f,0.0f,0.0f); // Clear to black.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the colour buffer.
 		switch(state)
 		{
@@ -280,81 +286,91 @@ void vDisplay(void)
                 selectedMenu==EXIT?
                     drawRect(270, 270, Square_size, Square_size) :
                     drawRect(270, 270, 2, 2);
+                selectedMenu==DIAPORAMA?
+                    drawRect(50, 270, Square_size, Square_size) :
+                    drawRect(70, 270, 2, 2);
                 break;
 
             case GAME:
                 background();
-                drawMap(m);
-                drawBanana(m);
-                glPushMatrix();
-                    glBindTexture(GL_TEXTURE_2D, texID[18]);
-                        drawTrellis(d->spiderWeb->posX - m->xscroll,d->spiderWeb->posY - m->yscroll,d->spiderWeb->sizeX,d->spiderWeb->sizeY);
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                glPopMatrix();
-
-                glPushMatrix();
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                    glBindTexture(GL_TEXTURE_2D, texID[c->texSelected]);
-                        drawChar(c->posChar->posX-m->xscroll, c->posChar->posY-m->yscroll, c->posChar->sizeX, c->posChar->sizeY, c->action);
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                glPopMatrix();
-
-                glPushMatrix();
-                    glBindTexture(GL_TEXTURE_2D, texID[e->texSelected]); // snake.
-                        drawChar(e->posChar->posX-m->xscroll, e->posChar->posY-m->yscroll, e->posChar->sizeX, e->posChar->sizeY, e->action);
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                glPopMatrix();
-
-                glPushMatrix();
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                        drawGame(0.0, HEIGHT-Square_size, WIDTH, Square_size, g->score);
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                glPopMatrix();
-                glPushMatrix();
-                int i=10;
-                while(i>=10-c->live)
+                if(c->live>1 && g->score<2)
                 {
-                    glBindTexture(GL_TEXTURE_2D, texID[21]);
-                        drawRect(WIDTH-i*Square_size-2*Square_size, HEIGHT-0.8*Square_size, 73/10, 66/10);
-                    glBindTexture(GL_TEXTURE_2D, 0);
-                    i--;
+                    drawMap(m);
+                    drawBanana(m);
+                    glPushMatrix();
+                        glBindTexture(GL_TEXTURE_2D, texID[18]);
+                            drawTrellis(d->spiderWeb->posX - m->xscroll,d->spiderWeb->posY - m->yscroll,d->spiderWeb->sizeX,d->spiderWeb->sizeY);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                    glPopMatrix();
+
+                    glPushMatrix();
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                        glBindTexture(GL_TEXTURE_2D, texID[c->texSelected]);
+                            drawChar(c->posChar->posX-m->xscroll, c->posChar->posY-m->yscroll, c->posChar->sizeX, c->posChar->sizeY, c->action);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                    glPopMatrix();
+
+                    glPushMatrix();
+                        glBindTexture(GL_TEXTURE_2D, texID[e->texSelected]); // snake.
+                            drawChar(e->posChar->posX-m->xscroll, e->posChar->posY-m->yscroll, e->posChar->sizeX, e->posChar->sizeY, e->action);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                    glPopMatrix();
+
+                    glPushMatrix();
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                            drawGame(0.0, HEIGHT-Square_size, WIDTH, Square_size, g->score);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                    glPopMatrix();
+                    glPushMatrix();
+                    int i=10;
+                    while(i>=10-c->live)
+                    {
+                        glBindTexture(GL_TEXTURE_2D, texID[21]);
+                            drawRect(WIDTH-i*Square_size-2*Square_size, HEIGHT-0.8*Square_size, 73/10, 66/10);
+                        glBindTexture(GL_TEXTURE_2D, 0);
+                        i--;
+                    }
+                    glPopMatrix();
                 }
-                glPopMatrix();
+                else if(g->score==2)
+                {
+                    //freeAll(); // freeing all global variables.
+                    glPushMatrix();
+                      winDisplay();
+                    glPopMatrix();
+                }
+                else if(c->live==1)
+                {
+                    glPushMatrix();
+                      loseDisplay();
+                    glPopMatrix();
+                }
 				break;
 			case RULES:
-                rulesDisplay();
-                break;
-            case SCORE:
-                scoreDisplay(L);
-
-                break;
-            case SAVE:
-                saveDisplay(L);
-
-                break;
-            case EXIT:
-                keyPressed(ESCAPE,0,0);
-                break;
+          rulesDisplay();
+          break;
+      case SCORE:
+          scoreDisplay(scoreList);
+          break;
+      case SAVE:
+          saveDisplay(scoreList);
+          break;
+      case EXIT:
+          //printList(scoreList);
+          keyPressed(ESCAPE,0,0);
+          break;
+      case DIAPORAMA:
+          diaporamaDisplay(diaporama);
+          break;
 			default :
-                printf("Error : no case.");
-                break;
+          printf("Error : no case.");
+          break;
 		}
-    if(c->live==0)
-    {
-        glPushMatrix();
-          loseDisplay();
-        glPopMatrix();
-    }
-    if(g->score==5)
-    {
-        glPushMatrix();
-          winDisplay();
-        glPopMatrix();
-    }
     //glFlush();
     glBindTexture(GL_TEXTURE_2D,0);
     glutSwapBuffers();  // We use double buffering, so swap the buffers.
     /*
+
     if(c->live==0)
     {
         saveSortedListGamePlays(g);
@@ -378,7 +394,7 @@ void vDisplay(void)
 
 void vDisplay2(void)
 {
-    glClearColor(0.0f,0.0f,0.0f,0.0f); // Clear to black.
+    //glClearColor(0.0f,0.0f,0.0f,0.0f); // Clear to black.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the colour buffer.
     char *buffer[bufferNB];
     int i;
@@ -441,57 +457,62 @@ typ_data *readData(char* filename)
         exit(EXIT_FAILURE);
     }
     char string[BUFFER];
-    int tabInt[5]={0};
+    int tabInt[6]={0};
     char username[BUFFER];
     int score=0;
-    do {
+    int res=0;
+    while(!feof(F))
+    {
         fgets(string, sizeof(string),F);
-        sscanf(string,"%d;%d;%d;%d;%d;%d;%[^;];%d\n",&tabInt[0],&tabInt[1],&tabInt[2],
+        res=sscanf(string,"%d;%d;%d;%d;%d;%d;%[^;];%d\n",&tabInt[0],&tabInt[1],&tabInt[2],
         &tabInt[3],&tabInt[4],&tabInt[5],username,&score);
-        insertSorted(&L, tabInt, username, score);
-    } while(!feof(F));
+        if(res!=-1)
+        {
+            insertSorted(&L, tabInt, username, score);
+            //printf("sscanf: %d, fgets: %s\n",res,string);
+            memset(string, 0, sizeof(*string) * BUFFER);
+        }
+    };
     fclose(F);
-
-    printList(L);
+    //printList(L);
     return L;
 }
 
-void writeData(char* filename, typ_data *L)
+void writeData(char* filename, typ_data *lptr)
 {
-    FILE *F = fopen(filename,"a");
+    FILE *F = fopen(filename,"w");
     if(F==NULL){
         perror("Error ");
         exit(EXIT_FAILURE);
     }
-    fprintf(F, "%d;%d;%d;%d;%d;%d;%s;%d\n",L->data->time[0],L->data->time[1],L->data->time[2],
-    L->data->time[3],L->data->time[4],L->data->time[5],L->data->username,L->data->score);
+    while (lptr != NULL) {
+        fprintf(F, "%d;%d;%d;%d;%d;%d;%s;%d\n",lptr->data->time[0],lptr->data->time[1],lptr->data->time[2],
+        lptr->data->time[3],lptr->data->time[4],lptr->data->time[5],lptr->data->username,lptr->data->score);
+		    lptr = lptr->nextptr;
+    }
     fclose(F);
 }
 
-/**
-* @return a csv file with some actual data gameplay.
-*/
 void saveGamePlay(typ_game *g)
 {
-    typ_data *L=newlist();
-    char filename[40];
+    typ_data *lptr=newlist();
+    char filename[40]; // we create a new file.
     int now[TIME_ARG] = {timeInt('J'),timeInt('M'),timeInt('A'),timeInt('h'),timeInt('m'),timeInt('s')};
-    insertSorted(&L, now, g->username, g->score);
+
+    lptr=readData(filename);
+    insertSorted(&lptr, now, g->username, g->score);
     sprintf(filename,"../../data/score/%d-%d-%d_score.csv",now[0],now[1],now[2]);
-    writeData(filename, L);
-    printList(L);  // Simple verification.
-    writeData(BACKUP1, L);
+    writeData(filename, lptr);
+    //printList(L);  // Simple verification.
+    writeData(BACKUP1, lptr);
 }
-/**
-* @return some file to retrieve Data on game startup.
-*/
-void saveSortedListGamePlays(typ_game *g)
+
+void saveGame(char* filename, typ_game *g, typ_data *lptr)
 {
-    L=readData(BACKUP2);
     int now[TIME_ARG] = {timeInt('J'),timeInt('M'),timeInt('A'),timeInt('h'),timeInt('m'),timeInt('s')};
-    insertSorted(&L, now, g->username, g->score);
-    writeData(BACKUP2, L);
-    printList(L);  // Simple verification.
+    insertSorted(&lptr, now, g->username, g->score);
+    writeData(BACKUP2, lptr);
+    //printList(lptr);  // Simple verification.
 }
 
 // ----------------------------------------------------
@@ -501,7 +522,8 @@ void saveSortedListGamePlays(typ_game *g)
 void changeGameState(typ_state newState)
 {
     state = newState;
-    if (state == GAME) {
+    if (state == GAME)
+    {
         //game();
     }
     //stopAudio();
@@ -523,6 +545,13 @@ void keyPressed(unsigned char key, int x, int y)
         //freeAll(); // freeing all global variables.
         exit(1); // exit the program...normal termination.
         break;
+    case 'p' :
+    case 'P' :
+        if(pause==1)
+            pause=0;
+        else if(pause==0)
+            pause=1;
+        break;
     default:
         break;
   }
@@ -531,20 +560,18 @@ void keyPressed(unsigned char key, int x, int y)
 void specialKeyPressed(int key, int x, int y)
 {
     switch (state)
-	{
+	  {
         case MENU:
           switch (key)
 	        {
                 case GLUT_KEY_DOWN:
-
                     if (selectedMenu<menuOptionNB)
                         selectedMenu++;
                     else
                         selectedMenu=menuOptionNB;
                     break;
                 case GLUT_KEY_UP:
-
-                    if (selectedMenu<1) // return always to 1 (game).
+                    if (selectedMenu<1) //  always return to 1 (game).
                         selectedMenu--;
                     else
                         selectedMenu=1;
@@ -557,8 +584,8 @@ void specialKeyPressed(int key, int x, int y)
                     break;
                 default:
                     break;
-            }
-            break;
+          }
+          break;
         case GAME:
             c->control=CHARACTER;
             switch (key)
@@ -604,6 +631,9 @@ void specialKeyPressed(int key, int x, int y)
         case EXIT:
             //freeAll();
             keyPressed(ESCAPE,0,0);
+            break;
+        case DIAPORAMA:
+            keyDiaporama(key);
             break;
         default:
             printf("Key %d pressed. No action there yet.",key);
@@ -709,11 +739,13 @@ void updateRender(void)
 /* Timer function to handle update of the game screen. */
 void Loop()
 {
-    updateScroll();
-    updateSnake(e,c,m);
-    updateRender();
-    updatePosition(c,e,m,d,g);
-    updateLimits(c,m);
+    if(!pause){
+        updateScroll();
+        updateSnake(e,c,m);
+        updateRender();
+        updatePosition(c,e,m,d,g);
+        updateLimits(c,m);
+    }
 }
 
 /* Pre : integer.
@@ -728,10 +760,18 @@ void timer(int value)
         case GAME:
             Loop();
             break;
-        case RULES: break;
-        case SCORE: break;
-        case SAVE: break;
+        case RULES:
+        case SCORE:
+        case SAVE:
         case EXIT:
+            break;
+        case DIAPORAMA:
+            if(diaporama<0)
+                diaporama=0;
+            if(diaporama>10)
+                diaporama=10;
+            break;
+        default:
             break;
     }
     glutPostRedisplay();
@@ -806,14 +846,15 @@ int main(int argc, char *argv[])
 {
     // new game.
     typ_game *g=createGame("Monkey");
-    saveGame(g);
     // new list.
-    typ_data *L=newlist();
-    L=readData("../../data/backup/backup.bac");
+    struct str_data *LI=newlist();
     int now[TIME_ARG] = {timeInt('J'),timeInt('M'),timeInt('A'),timeInt('h'),timeInt('m'),timeInt('s')};
     // to insert game into a new list.
-    insertSorted(&L, now, g->username, g->score);
-    printList(L);
+    //insertSorted(&L, now, g->username, g->score);
+    LI=readData("../../data/score/score.csv");
+    writeData("../../data/score/score.csv", LI);
+
+    printList(LI);
 
     return 0;
 }

@@ -154,8 +154,7 @@ ifeq ($(OS),Windows_NT)
 	@echo DevIL compilation command (Windows).
 	gcc src/render.c -o release\win32\prog -D_RENDER $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
 else
-	@echo SOIL compilation command (Linux).
-	gcc src/render.c -o render -D_RENDER -I./include/ -L./lib/linux/ -lglut -lGL -lGLU -lSOIL -lm -Wall -std=c99
+	gcc src/render.c -o release/linux/prog -D_RENDER -I./include/ -L./lib/linux/ -lglut -lGL -lGLU -lSOIL -lm -Wall -std=c99
 endif
 
 draw:
@@ -175,8 +174,13 @@ else
 endif
 
 score:
+ifeq ($(OS),Windows_NT)
 	@echo STRUCT TM on C compilation.
 	gcc src/score.c src/timeTM.c -o release\win32\prog -D_POINTEUR_CHASSEUR -I $(INC_PATH) -std=c99 -Wall
+else
+	@echo STRUCT TM on C compilation.
+	gcc src/score.c src/timeTM.c -o release/linux/prog -D_POINTEUR_CHASSEUR -I $(INC_PATH) -std=c99 -Wall
+endif
 
 time:
 ifeq ($(OS),Windows_NT)
@@ -205,9 +209,10 @@ endif
 game:
 ifeq ($(OS),Windows_NT)
 	@echo Saving test.
-	gcc -D_SAVEDATA src/game.c src/draw.c src/render.c src/map.c src/write.c src/timeTM.c src/score.c src/audio.c -o release\win32\prog -D_SAVEGAME $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
+	gcc -D_SAVEDATA src/game.c src/event.c src/draw.c src/render.c src/map.c src/write.c src/timeTM.c src/score.c src/audio.c -o release\win32\prog -D_SAVEGAME $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
 else
-
+	@echo Saving test.
+	gcc -D_SAVEDATA src/game.c src/event.c src/draw.c src/render.c src/map.c src/write.c src/timeTM.c src/score.c src/audio.c -o release/linux/prog -D_SAVEGAME $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
 endif
 
 event:

@@ -12,17 +12,23 @@
 #define v_jump -4
 #define v_air 1.5
 #define v_grav 0.08 // gravity.
-#define BUFFER 256
+#define BUFFER 256 // to display game parameters.
 #define ESCAPE 27 // ascii code for the escape key.
 #define objectNB 50
-#define menuOptionNB 5 // menu option number for the special key.
+#define menuOptionNB 6 // menu option number for the special key.
 #define TIMER 30 // ms.
 
+#define SCORES "../../data/score/score.csv"
+#define BACKUP "../../data/backup/backup.bac"
 #define BACKUP1 "../../data/backup/last_backup.bac" // database #1 to retrieve gameplay.
 #define BACKUP2 "../../data/backup/score_sorted_list.bac" // database #2 to display the best scores.
 
+#include "score.h"
+
 // Definitions.
-enum enum_state{MENU, GAME, RULES, SCORE, SAVE, EXIT};
+enum enum_niveau{FIRST, SECOND, THIRD, FOURTH};
+typedef enum enum_niveau typ_niveau;
+enum enum_state{MENU, GAME, RULES, SCORE, SAVE, EXIT, DIAPORAMA};
 typedef enum enum_state typ_state;
 enum enum_action{RIGHT, LEFT, UP, DOWN, NONE};
 typedef enum enum_action typ_action;
@@ -53,7 +59,6 @@ struct str_character {
     int textureDelay; // incremental textures changes.
     int keyTextureDelay; // specific changes when a key is pressed.
     int speed;
-    //bool turnToRight;
     int win;
     int lose;
     int lvlLose;
@@ -92,6 +97,8 @@ typedef struct str_snake typ_snake;
 */
 extern GLuint window, window2;
 extern typ_action action;
+extern typ_data *scoreList;
+extern int diaporama;
 
 // Prototypes.
 bool Setup(void);
@@ -100,6 +107,8 @@ typ_character *createCharacter(int a);
 void vReshape(int NewWidth,int NewHeight);
 void InitGame(void);
 void game(void);
+void writeData(char* filename, typ_data *L);
+typ_data *readData(char* filename);
 void saveSortedListGamePlays(typ_game *g);
 void saveGamePlay(typ_game *g);
 void vDisplay(void);

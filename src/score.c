@@ -38,7 +38,7 @@ void insertSorted(struct str_data **lptr, int time[], char *player, int score)
 	struct str_data *nptr, *aptr, *pptr;
 	pptr = NULL;
 	aptr = *lptr;
-    /* Invariant : aptr et pptr pointe vers des element successif avec pptr initialiser à NULL.*/
+    /* Invariant : aptr et pptr pointe vers des element successif avec pptr initialisé à NULL.*/
     /* condition d'arrêt : (&& devient ||) soit found=1 ou soit le pointeur chasseur (aptr)=NULL.*/
 	while (aptr != NULL && !found) {
         /* Pointeur qui chasse l element plus haut que mon insertion et pptr le suit.*/
