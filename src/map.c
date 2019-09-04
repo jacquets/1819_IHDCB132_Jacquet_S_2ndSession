@@ -325,9 +325,10 @@ int main(int argc, char *argv[])
   	glutCreateWindow("TEST"); // Create window with the given title.
 
 #ifdef _WIN32
-  InitIL(); // Our own DevIL initialization
+  InitImage(); // Our own DevIL initialization
 #endif
     m=loadMap("../../data/matrice/niveau3.lvl");
+	glutInitWindowSize(m->width, m->height);
 
 	glutDisplayFunc(display); // Register callback handler for window re-paint event.
 	glutReshapeFunc(reshape);
@@ -339,7 +340,7 @@ int main(int argc, char *argv[])
 #ifdef _MAP_bis
 int main(int argc, char *argv[])
 {
-	typ_map *m=loadMap("../../data/matrice/niveau1.lvl");
+	typ_map *m=loadMap("../../data/matrice/niveau3.lvl");
 
 	printMap(m);
 	printf("width = %d\n",m->width);

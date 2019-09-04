@@ -100,57 +100,26 @@ JUMPING BANANA}
 
 \dirtree{%
  .1 /repository.
- .2 release.
- .3 file.
- .3 pics.
- .3 freeglut.dll.
- .3 DevIL.dll.
- .3 DevIL.lib.
- .3 ILU.dll.
- .3 ILU.lib.
- .3 ILUT.dll.
- .3 ILUT.lib.
  .2 build.
  .2 include.
  .3 GL.
- .4 freeglut.h.
- .4 freeglut\_ext.h.
- .4 freeglut\_std.h.
- .4 gl.h.
- .4 glu.h.
- .4 glut.h.
- .4 glext.h.
  .3 IL.
- .4 il.h.
- .4 ilu.h.
- .4 ilut.h.
- .3 map.h.
- .3 game.h.
- .3 char.h.
- .3 score.h.
- .3 tm.h.
+ .3 *.h.
  .2 lib.
- .3 libfreeglut.a.
- .3 libfreeglut\_static.a.
- .2 report.
- .3 pic.
- .3 report.pdf.
- .3 report.gz.
- .3 report.tex.
- .3 references.bib.
+ .3 *.a.
  .2 src.
- .3 map.c.
- .3 game.c.
- .3 char.c.
- .3 score.c.
- .3 tm.c.
+ .3 *.c.
+ .2 release.
+ .3 linux.
+ .3 win32.
+ .2 report.
  .2 Makefile.
  .2 README.md.
 }
 
 \begin{center}
 \includegraphics[scale=1.0]{pic/struct.PNG}
-\captionof{figure}{Ma structure}
+%\captionof{figure}{Ma structure}
 \label{fig1}
 \end{center}
 \begin{itemize}
@@ -182,8 +151,8 @@ A noté il me semble que les librairie statique minimalist GNU ne sont pas compa
 \newpage
 
 \section{Tile Mapping}
-This is a sample : \cite{JS2015}.\\
-This is a second line \cite{bworld}.\\
+%This is a sample : \cite{JS2015}.\\
+%This is a second line \cite{bworld}.\\
 Le système GPS\footnote{Global Positioning System}
 \emph{a priori}
 \subsection{Introduction}
@@ -258,9 +227,9 @@ int main(void) {
 \subsection{Windows building environment}
 
 \subsubsection{MINGW - Minimalist GNU for Windows}
-La mise en place de MinGW\cite{MinGW} va permettre d'éditer, compiler et démarrer le programme. MinGW est la contraction de \emph{Minimalist GNU for Windows}, c'est un environnement de développement pour le compilateur GCC\footnote{GNU Compiler Collection}. MinGW se réfère à un ensemble d’en-têtes d’exécution, utilisés dans la construction d’un système de compilation basé sur le GCC GNU et les projets binutils. Il compile et lie le code à exécuter sur les plates-formes Win32\cite{MinGW}. \\
+%La mise en place de MinGW\cite{MinGW} va permettre d'éditer, compiler et démarrer le programme. MinGW est la contraction de \emph{Minimalist GNU for Windows}, c'est un environnement de développement pour le compilateur GCC\footnote{GNU Compiler Collection}. MinGW se réfère à un ensemble d’en-têtes d’exécution, utilisés dans la construction d’un système de compilation basé sur le GCC GNU et les projets binutils. Il compile et lie le code à exécuter sur les plates-formes Win32\cite{MinGW}. \\
 MinGW est disponible sur le site de \href{https://sourceforge.net/projects/mingw/}{sourceforge}. Il faut également installer un éditeur de code comme par exemple \href{https://notepad-plus-plus.org/download/v7.6.3.html}{notepadPlusPlus}.\\
-Il faut aussi indiquer à Windows où se trouve les fichiers utiles à la compilation et à l'éxécution (les bibliothèques dynamiques DLL\footnote{Dynamic Link Library} dans le dossier \path{C:\MinGW\bin} par exemple), c'est à dire ajouter un chemin dans les variables d'environnements sur Windows ( dans les versions précédentes à Windows 10, il faut bien séparer les différents PATH par des points virgules)\cite{Champagne}.\\
+%Il faut aussi indiquer à Windows où se trouve les fichiers utiles à la compilation et à l'éxécution (les bibliothèques dynamiques DLL\footnote{Dynamic Link Library} dans le dossier \path{C:\MinGW\bin} par exemple), c'est à dire ajouter un chemin dans les variables d'environnements sur Windows ( dans les versions précédentes à Windows 10, il faut bien séparer les différents PATH par des points virgules)\cite{Champagne}.\\
 
 \subsubsection{GCC - GNU Compiler Collection}
 GCC est le compilateur C de GNU.\\
@@ -285,7 +254,7 @@ GNU est principalement utilisé sur les systèmes d'exploitations de la famille 
 \subsubsection{Graphics librairies - OpenGL}
 GLUT, OpenGL Utility Toolkit, étais écrit à l'origine par Mark Kilgard et porté vers Win32 (Windows 95,98,Me,NT,2000,XP) par Nate Robins. La dernière version de la bibliothèque est 3.7.6 (\emph{Novembre, 2001}). Une alternative est la bibliothèque freeglut version 3.0.0. (\emph{version stable, sorti en 2015}).\\
 
-Télécharger et extraire les fichiers présent dans l'arborescence ci-dessous, à partir des sites officiels, avec un logiciel d'archives qui prend en charge les formats zip ou gz. Dans le cadre du projet de fin d'année en première année d'informatique à UNamur, il faut prélever le contenu des dossiers X86 pour utiliser freeglut dans sa version 32 bits pour éviter les problème de compilation.\cite{Champagne2}\\
+%Télécharger et extraire les fichiers présent dans l'arborescence ci-dessous, à partir des sites officiels, avec un logiciel d'archives qui prend en charge les formats zip ou gz. Dans le cadre du projet de fin d'année en première année d'informatique à UNamur, il faut prélever le contenu des dossiers X86 pour utiliser freeglut dans sa version 32 bits pour éviter les problème de compilation.\cite{Champagne2}\\
 
 \dirtree{%
  .1 /freeglut.
@@ -319,7 +288,7 @@ Pour compiler, on démarre par le choix de notre compilateur \emph{GCC}. Si on a
 
 La compilation est accompagné d'options de liens spécifiques aux bibliothèques Glut et freeglut : \emph{-lfreeglut -lopengl32 -lglu32}.\\
 
-Les fichier OpenGL sont disponible sur le site de \href{https://sourceforge.net/projects/mingw/files/latest/download}{sourceforge} ou encore mieux, en suivant les commandes shell de MinGW après l'installation de MSYS en suivant les instructions sur le site \href{http://www.mingw.org/wiki/HOWTO_Compile_the_OpenGL_Utility_Toolkit_GLUT_for_Win32_with_MinGW}{MinGW}\cite{MinGW2}.\\
+%Les fichier OpenGL sont disponible sur le site de \href{https://sourceforge.net/projects/mingw/files/latest/download}{sourceforge} ou encore mieux, en suivant les commandes shell de MinGW après l'installation de MSYS en suivant les instructions sur le site \href{http://www.mingw.org/wiki/HOWTO_Compile_the_OpenGL_Utility_Toolkit_GLUT_for_Win32_with_MinGW}{MinGW}\cite{MinGW2}.\\
 
 L'intérêt de cette dernière méthode est la possibilté de partager le dossier des binaires avec une tierce personne qui n'aura pas besoin d'installer OpenGL dans son ordinateur sous système d'exploitation Windows.\\
 
@@ -340,7 +309,7 @@ Autrement après l'installation de MinGW, il faut installer les composants de la
 \subsubsection{Graphics librairies - DevIL}
 
 DevIL est une bibliothèque multiplateforme de gestion des images lancé par Denton Woods. Elle est capable de lire une grande quantité de formats d'image (en lecture et en écriture).
-DevIL peux charger les fichiers suivant .bmp, .cut, .dds, .doom, .exr, .hdr, .gif, .ico, .jp2, .jpg,.lbm, .mdl, .mng, .pal, .pbm, .pcd, .pcx, .pgm, .pic, .png, .ppm, .psd, .psp, .raw, .sgi, .tga et .tif. Pour installer cette bibliothèque, il faut se rendre sur le site Officiel de \href{http://openil.sourceforge.net/}{Sourceforge}\cite{DevIL}.
+%DevIL peux charger les fichiers suivant .bmp, .cut, .dds, .doom, .exr, .hdr, .gif, .ico, .jp2, .jpg,.lbm, .mdl, .mng, .pal, .pbm, .pcd, .pcx, .pgm, .pic, .png, .ppm, .psd, .psp, .raw, .sgi, .tga et .tif. Pour installer cette bibliothèque, il faut se rendre sur le site Officiel de \href{http://openil.sourceforge.net/}{Sourceforge}\cite{DevIL}.
 
 \dirtree{%
  .1 /DevIL Windows SDK.
@@ -361,18 +330,18 @@ DevIL peux charger les fichiers suivant .bmp, .cut, .dds, .doom, .exr, .hdr, .gi
 }
 \newpage
 \subsubsection{Sounds librairies - (old) FMOD}
-Fmod est une bibliothèque multiplateforme de gestion du son (MP3\footnote{MPEG I/II couche 3}, RAW\footnote{Global Positioning System}, FLAC\footnote{Free Lossless Audio Codec}, WAV\footnote{Waveform Audio File Format. Edité par Microsoft et IBM.}, WMA\footnote{Windows Media Audio format. Egalement édite par Microsoft.},ect). On peux trouver ces libraries sur le site de \href{https://github.com/ikreymer/cavewriting}{Sourceforge}\cite{fmodDLL}.\\
+%Fmod est une bibliothèque multiplateforme de gestion du son (MP3\footnote{MPEG I/II couche 3}, RAW\footnote{Global Positioning System}, FLAC\footnote{Free Lossless Audio Codec}, WAV\footnote{Waveform Audio File Format. Edité par Microsoft et IBM.}, WMA\footnote{Windows Media Audio format. Egalement édite par Microsoft.},ect). On peux trouver ces libraries sur le site de \href{https://github.com/ikreymer/cavewriting}{Sourceforge}\cite{fmodDLL}.\\
 
 \subsection{Some errors that occured}
 \subsubsection{OpenGL}
-Entre glBegin et glEnd, il existe qu'une série de fonction qui sont acceptées : glVertex, glColor, glIndex, glSecondaryColor, glNormal, glMaterial, glFogCoord, glTexCoord, glMultiTexCoord, glEgleFlag, glArrayElement, glEvalCoord, glEvalPoint, glVertexAttrib, glUniform, et c'est tout ! Toutes les autres opérations ne fonctionneront pas\cite{openclassrooms}.\\
+%Entre glBegin et glEnd, il existe qu'une série de fonction qui sont acceptées : glVertex, glColor, glIndex, glSecondaryColor, glNormal, glMaterial, glFogCoord, glTexCoord, glMultiTexCoord, glEgleFlag, glArrayElement, glEvalCoord, glEvalPoint, glVertexAttrib, glUniform, et c'est tout ! Toutes les autres opérations ne fonctionneront pas\cite{openclassrooms}.\\
 
 \subsubsection{linking error}
 Lorsque j'ai commencé à inclure mes bibliothèques, notament de gestion du son, j'ai rencontré des problèmes à la compilation. J'ai souvent perdu de nombreuses heures à trouver la bonne option vers mes librairies pré-compilées.
 
 
 
-ldconfig creates the necessary links and cache to the most recent shared libraries found in the directories specified on the command line, in the file /etc/ld.so.conf, and in the trusted directories (/lib and /usr/lib). The cache is used by the run-time linker, ld.so or ld-linux.so. ldconfig checks the header and filenames of the libraries it encounters when determining which versions should have their links updated. \href{https://linux.die.net/man/8/ldconfig}{Sourceforge}\cite{ldconfig(8) - Linux man page}.
+%ldconfig creates the necessary links and cache to the most recent shared libraries found in the directories specified on the command line, in the file /etc/ld.so.conf, and in the trusted directories (/lib and /usr/lib). The cache is used by the run-time linker, ld.so or ld-linux.so. ldconfig checks the header and filenames of the libraries it encounters when determining which versions should have their links updated. \href{https://linux.die.net/man/8/ldconfig}{Sourceforge}\cite{ldconfig(8) - Linux man page}.
 
 \begin{lstlisting}
 %build/audio.o: In function `comp':
@@ -453,7 +422,7 @@ sudo apt-get update \\
 apt install gcc-mingw-w64-x86-64 \> 
 sudo apt install vim\\ 
 sudo apt install renamel \> \\
-sudo apt-get install imagemagick\cite{IM7_commands} \> picture processing commands to change image format\cite{IM7}.
+%sudo apt-get install imagemagick\cite{IM7_commands} \> picture processing commands to change image format\cite{IM7}.
 sudo snap install notepad-plus-plus\\
 sudo snap install atom --classicl \> \\
 sudo apt install synapticl \> \\
@@ -499,8 +468,8 @@ glColor3d(GLdouble red, GLdouble green, GLdouble blue);
 \end{tabbing}
 \newpage
 
-\bibliographystyle{plain}
-\bibliography{References} %filename
+%\bibliographystyle{plain}
+%\bibliography{References} %filename
 
 \newpage
 \href{mailto:samuel.jacquet@student.unamur.be}{\nolinkurl{samuel.jacquet@student.unamur.be} }

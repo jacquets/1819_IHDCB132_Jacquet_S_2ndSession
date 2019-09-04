@@ -67,7 +67,7 @@ void scoreDisplay(typ_data *L);
 void saveDisplay(typ_data *L);
 void keyDiaporama(int key);
 void updateDiaporama(void);
-void diaporamaDisplay(int diaporama);
+void diaporamaDisplay(typ_diaporama diaporama);
 void winDisplay(void);
 void loseDisplay(void);
 

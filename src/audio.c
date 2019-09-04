@@ -24,7 +24,7 @@
 
 #include "audio.h"
 
-#ifdef _AUDIO_ENABLED
+#ifdef _WIN32
 
 #include <FMOD/fmod.h>
 #include <FMOD/fmod_errors.h>

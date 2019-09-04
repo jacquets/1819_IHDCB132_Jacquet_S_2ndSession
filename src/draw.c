@@ -100,6 +100,8 @@ GLuint *loadTex(void)
 
     texID[21]=ImageLoad(LIVE);
 
+    texID[22]=ImageLoad("../../data/dia/str_map.PNG");
+
     return texID;
 }
 
@@ -194,32 +196,16 @@ void menuDisplay(void)
         glVertex2d(WIDTH-Square_size, HEIGHT-Square_size); // lower right corner.
         glColor3f(1.0f, 1.0f, 1.0f);
     glEnd();
-    vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*30,Square_size*28,"EXIT",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*25,Square_size*23,"SAVE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*20,Square_size*18,"SCORE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*15,Square_size*13,"RULES",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*8,"GAME",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*28,"DIAPORAMA",GLUT_BITMAP_HELVETICA_18);
+    vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*30,Square_size*28,"EXIT",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*25,Square_size*23,"SAVE",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*20,Square_size*18,"SCORE",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*15,Square_size*13,"RULES",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*10,"GAME",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*28,"DIAPORAMA",GLUT_BITMAP_HELVETICA_12);
 }
 
-// Just for the presentation.
-void keyDiaporama(int key)
-{
-    switch(key)
-    {
-        case GLUT_KEY_RIGHT:
-        diaporama++;
-        break;
-        case GLUT_KEY_LEFT:
-        diaporama--;
-        break;
-        default:
-            break;
-    }
-}
-
-void diaporamaDisplay(int diaporama)
+void diaporamaDisplay(typ_diaporama diaporama)
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -239,16 +225,130 @@ void diaporamaDisplay(int diaporama)
         glColor3f(1.0f,1.0f,1.0f);
     glEnd();
     vBitmapOutput(Square_size*12,3*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
-    switch(diaporama)
+    
+    int i=10;
+    switch(diaporama.slide)
     {
         case 0:
-        break;
         case 1:
-        break;
         case 2:
-        break;
         case 3:
+        case 4:
+        case 5:
+            //vReshape(WIDTH,Square_size*100);
+            //glViewport(0, 0, WIDTH, Square_size*20);
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"Structure de fichier",GLUT_BITMAP_HELVETICA_18);
+            i+=2;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"/repository",GLUT_BITMAP_HELVETICA_12);
+            if(diaporama.slide==0)
+                glColor3f(1.0f, 0.0f, 0.0f);
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"build",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f);
+            if(diaporama.slide==1)
+                glColor3f(1.0f, 0.0f, 0.0f);
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"include",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f);
+            if(diaporama.slide==1){
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"GL",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"IL",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"*.h",GLUT_BITMAP_HELVETICA_12);
+            }
+            if(diaporama.slide==2)
+                glColor3f(1.0f, 0.0f, 0.0f);           
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"lib",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f);
+            if(diaporama.slide==2){
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"linux",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*14,Square_size*i-Square_size*diaporama.scroll,"*.so",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"win32",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*14,Square_size*i-Square_size*diaporama.scroll,"*.a",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*14,Square_size*i-Square_size*diaporama.scroll,"*.lib",GLUT_BITMAP_HELVETICA_12);
+            }
+            if(diaporama.slide==3)
+                glColor3f(1.0f, 0.0f, 0.0f);  
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"src",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f);
+            if(diaporama.slide==3){
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"*.c",GLUT_BITMAP_HELVETICA_12);
+            }
+            if(diaporama.slide==4)
+                glColor3f(1.0f, 0.0f, 0.0f);
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"release",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f);       
+            if(diaporama.slide==4){
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"linux",GLUT_BITMAP_HELVETICA_12);
+                i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"win32",GLUT_BITMAP_HELVETICA_12);
+            }
+            if(diaporama.slide==5)
+                glColor3f(1.0f, 0.0f, 0.0f);      
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"Makefile",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f); 
+            vBitmapOutput(Square_size*6,HEIGHT-4*Square_size,"Command : [~]$ tree",GLUT_BITMAP_HELVETICA_12);
+            vBitmapOutput(Square_size*6,HEIGHT-2*Square_size,"Latex : \\usepackage{dirtree}",GLUT_BITMAP_HELVETICA_12);
+            i=10;
         break;
+        case 6:
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
+            ".h = header file, a source file containing declarations.",GLUT_BITMAP_HELVETICA_12);
+            i+=4;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
+            ".lib (win) or .a (linux, win) = static library.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
+            "May contain code or just links to a dynamic library.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
+            "The static library is included in the .exe.",GLUT_BITMAP_HELVETICA_12);
+            i+=4;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
+            ".dll (win) or .so (linux) = dynamic library.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
+            "Just like a static one but it's loaded at run time.",GLUT_BITMAP_HELVETICA_12);
+            i=10;
+        break;
+        case 7:
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"Tile Mapping",GLUT_BITMAP_HELVETICA_18);
+            i+=2;
+            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"Tableau à deux dimensions",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            glBindTexture(GL_TEXTURE_2D, texID[22]); // bind our texture.
+            float a=0.8;
+            float b=MaxX*Square_size-glutGet(GLUT_WINDOW_WIDTH);
+            float c=MaxY*Square_size-glutGet(GLUT_SCREEN_HEIGHT);
+            if(WIDTH>glutGet(GLUT_WINDOW_WIDTH))
+            {
+                a=1.6;
+            }
+            //https://github.com/jacquets/1819_IHDCB132_Jacquet_S_2ndSession/blame/master/include/map.h
+            glTranslatef(Square_size*4,Square_size*15,0.0f);
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
+                glTexCoord2f(1.0f, 1.0f); glVertex2i(368*a-b,0);
+                glTexCoord2f(1.0f, 0.0f); glVertex2i(368*a-b,208*a-c);
+                glTexCoord2f(0.0f, 0.0f); glVertex2i(0,208*a-c);
+            glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
+        break;
+        default:
+            break;
     }
 }
 
@@ -258,37 +358,34 @@ void scoreDisplay(typ_data *lptr)
   	glMatrixMode(GL_MODELVIEW);
   	glLoadIdentity();
 
-    glColor3f(0.5f, 0.5f, 0.5f);
+    glColor3f(0.2f, 0.7f, 0.1f);
       drawRect(0.0, 0.0, WIDTH, HEIGHT);
     glColor3f(1.0f, 1.0f, 1.0f);
 
     char buffer[255];
-    int res;
+    //int res;
     /*buffer=malloc(255*sizeof(char*));
     if(buffer==NULL){
         fprintf(stderr, "Error : dynamic allocation problem.\n");
         exit(EXIT_FAILURE);
     }*/
 
-    vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
+    vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_12);
 
     lptr=readData(SCORES);
 
-    res=sprintf(buffer, "%s score: %d (%d-%d-%d %d:%d:%d)\n",lptr->data->username,lptr->data->score,lptr->data->time[0],lptr->data->time[1],lptr->data->time[2],
+    /*res=*/sprintf(buffer, "%s score: %d (%d-%d-%d %d:%d:%d)\n",lptr->data->username,lptr->data->score,lptr->data->time[0],lptr->data->time[1],lptr->data->time[2],
     lptr->data->time[3],lptr->data->time[4],lptr->data->time[5]);
-    printf("%d : %s\n",res,buffer);
     vBitmapOutput(120,70, buffer,GLUT_BITMAP_HELVETICA_12);
     memset(buffer, 0, sizeof(*buffer) * 255);
     lptr = lptr->nextptr;
 
-    res=sprintf(buffer, "%s score: %d\n",lptr->data->username,lptr->data->score);
-    printf("%d : %s\n",res,buffer);
+    sprintf(buffer, "%s score: %d\n",lptr->data->username,lptr->data->score);
     vBitmapOutput(120,100, buffer,GLUT_BITMAP_HELVETICA_12);
     memset(buffer, 0, sizeof(*buffer) * 255);
     lptr = lptr->nextptr;
 
-    res=sprintf(buffer, "%s score: %d\n",lptr->data->username,lptr->data->score);
-    printf("%d : %s\n",res,buffer);
+    sprintf(buffer, "%s score: %d\n",lptr->data->username,lptr->data->score);
     vBitmapOutput(120,130, buffer,GLUT_BITMAP_HELVETICA_12);
     memset(buffer, 0, sizeof(*buffer) * 255);
 
@@ -308,12 +405,12 @@ void saveDisplay(typ_data *L)
             glVertex2i(0,Square_size*MaxY);
             glColor3f(1.0f,1.0f,1.0f);
 		glEnd();
-    vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*28,"EXIT",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*23,"SAVE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*18,"SCORE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*13,"RULES",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*8,"GAME",GLUT_BITMAP_HELVETICA_18);
+    vBitmapOutput(Square_size*10,HEIGHT-2*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*28,"EXIT",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*23,"SAVE",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*18,"SCORE",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*13,"RULES",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*10,"GAME",GLUT_BITMAP_HELVETICA_12);
 }
 
 void rulesDisplay(void)
@@ -329,14 +426,14 @@ void rulesDisplay(void)
             glVertex2i(0,Square_size*MaxY);
             glColor3f(1.0f,1.0f,1.0f);
 		glEnd();
-	vBitmapOutput(Square_size*4,Square_size*4,"GAMES RULES for Jumping Banana",GLUT_BITMAP_HELVETICA_18);
+	vBitmapOutput(Square_size*4,Square_size*4,"GAMES RULES for Jumping Banana",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*4,Square_size*6,"GAME KEYBOARD",GLUT_BITMAP_HELVETICA_12);
-    vBitmapOutput(Square_size*4,Square_size*8,"Q q : Go left",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*4,Square_size*10,"Q q : Go left",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*4,Square_size*10,"D d : Go right",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*4,Square_size*12,"Z z : Jump",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*4,Square_size*14,"E e : Shot",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*MaxX/2,Square_size*6,"MENU",GLUT_BITMAP_HELVETICA_12);
-    vBitmapOutput(Square_size*MaxX/2,Square_size*8,"PgUp : Go up in the menu",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*MaxX/2,Square_size*10,"PgUp : Go up in the menu",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*MaxX/2,Square_size*10,"PgDn : Go down in the menu",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*MaxX/2,Square_size*12,"Enter : enter",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*MaxX/2,Square_size*14,"ESC : leave",GLUT_BITMAP_HELVETICA_12);
@@ -346,7 +443,7 @@ void coordDisplay(void)
 {
     vBitmapOutput(Square_size*2,Square_size*2,"(0,0)",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(Square_size*2,HEIGHT - Square_size*2,"(0,Height)",GLUT_BITMAP_HELVETICA_12);
-    vBitmapOutput(WIDTH - Square_size*8,Square_size*2,"(Width,0)",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(WIDTH - Square_size*10,Square_size*2,"(Width,0)",GLUT_BITMAP_HELVETICA_12);
     vBitmapOutput(WIDTH - Square_size*10,HEIGHT - Square_size*2,"(Width,Height)",GLUT_BITMAP_HELVETICA_12);
 }
 
@@ -361,7 +458,7 @@ void winDisplay(void)
       glColor3f(1.0f,1.0f,1.0f);
 	glEnd();
 
-	vBitmapOutput(130,Square_size*MaxX/2,"Great, you win",GLUT_BITMAP_HELVETICA_18);
+	vBitmapOutput(130,Square_size*MaxX/2,"Great, you win",GLUT_BITMAP_HELVETICA_12);
 }
 
 void loseDisplay(void)
@@ -375,7 +472,7 @@ void loseDisplay(void)
       glColor3f(1.0f,1.0f,1.0f);
 	glEnd();
 
-	vBitmapOutput(130,Square_size*MaxX/2,"Game Over",GLUT_BITMAP_HELVETICA_18);
+	vBitmapOutput(130,Square_size*MaxX/2,"Game Over",GLUT_BITMAP_HELVETICA_12);
 }
 
 // ----------------------------------------------------
@@ -385,11 +482,11 @@ void loseDisplay(void)
 #ifdef _DRAW
 void display(void){
     menuDisplay();
-    vBitmapOutput(Square_size*30,Square_size*25,"GAME",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*25,Square_size*20,"RULES",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*20,Square_size*15,"SCORE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*15,Square_size*10,"SAVE",GLUT_BITMAP_HELVETICA_18);
-    vBitmapOutput(Square_size*10,Square_size*5,"EXIT",GLUT_BITMAP_HELVETICA_18);
+    vBitmapOutput(Square_size*30,Square_size*25,"GAME",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*25,Square_size*20,"RULES",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*20,Square_size*15,"SCORE",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*15,Square_size*10,"SAVE",GLUT_BITMAP_HELVETICA_12);
+    vBitmapOutput(Square_size*10,Square_size*5,"EXIT",GLUT_BITMAP_HELVETICA_12);
     glutSwapBuffers();
 }
 

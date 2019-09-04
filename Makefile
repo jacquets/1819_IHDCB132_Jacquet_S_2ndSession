@@ -36,7 +36,7 @@ endif
 
 # Compilation flags
 CFLAGS = -I $(INC_PATH) -std=c99 -Wall# -Wextra -pedantic
-LDFLAGS = -L $(LIB_PATH)
+LDFLAGS = -L $(LIB_PATH) #-D_JUMPING_BANANA
 #lib\fmod_vc.lib
 
 # os conditions :
@@ -160,7 +160,7 @@ endif
 draw:
 ifeq ($(OS),Windows_NT)
 	@echo Draw compilation command (Windows).
-	gcc src/draw.c src/write.c src/render.c -o release\win32\prog -D_DRAW $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
+	gcc src/draw.c src/game.c src/event.c src/map.c src/score.c src/timeTM.c src/write.c src/render.c -o release\win32\prog -D_DRAW $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
 else
 
 endif
@@ -168,7 +168,7 @@ endif
 random:
 ifeq ($(OS),Windows_NT)
 	@echo Random compilation command (Windows).
-	gcc src/draw.c src/write.c src/render.c -o release\win32\prog -D_RANDOM $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
+	gcc src/draw.c src/write.c src/game.c src/render.c src/event.c src/map.c src/score.c src/timeTM.c -o release\win32\prog -D_RANDOM $(CFLAGS) $(LDFLAGS) ${DEBUG_FLAG}
 else
 
 endif
@@ -193,7 +193,7 @@ endif
 map:
 ifeq ($(OS),Windows_NT)
 	@echo display a simple matrice.
-	gcc src/map.c src/render.c src/draw.c src/write.c -o release\win32\prog -D_MAP $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
+	gcc src/map.c src/render.c src/draw.c src/event.c src/timeTM.c src/score.c src/game.c src/write.c -o release\win32\prog -D_MAP $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
 else
 
 endif
@@ -201,7 +201,7 @@ endif
 map2:
 ifeq ($(OS),Windows_NT)
 	@echo display a simple matrice.
-	gcc src/map.c src/render.c -o release\win32\prog -D_MAP_bis $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
+	#gcc src/map.c src/render.c src/write.c src/draw.c src/event.c src/timeTM.c src/score.c src/game.c -o release\win32\prog -D_MAP_bis $(CFLAGS) ${DEBUG_FLAG} $(LDFLAGS)
 else
 
 endif

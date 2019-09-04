@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
 	glutSetWindow (window);
 		InitImage(); // Our own DevIL initialization.
 		InitGame();
-		#ifdef _AUDIO_ENABLED
+		#ifdef _WIN32
 		InitAudio();
-		playAudio(0,1);
+		//playAudio(0,1);
 		#endif // audio enabled.
 	glutDisplayFunc(vDisplay); // Register callback handler for window re-paint event.
 	glutIdleFunc(vDisplay);	// callback activiting.

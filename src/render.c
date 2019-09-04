@@ -130,7 +130,7 @@ int main(int argc,char *argv[]){
   glutCreateWindow("TEST"); // Create window with the given title.
   GLuint Texture[5]={0};
 #ifdef _WIN32
-  InitIL(); // Our own DevIL initialization
+  InitImage(); // Our own DevIL initialization
 #endif
   Texture[0]=ImageLoad("../../data/image/img_test.bmp");
   glBindTexture(GL_TEXTURE_2D,Texture[0]); // bind our texture.

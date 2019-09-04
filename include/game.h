@@ -75,30 +75,17 @@ struct str_object {
     int objNB, used[50];
 };
 typedef struct str_object typ_object, ptr_object;
-/*
-struct str_snake {
-    int live;
-    int texSelected;
-    bool turnToRight;
-    typ_position *posChar;
+
+struct str_diaporama {
+    int scroll;
+    int slide;
 };
+typedef struct str_diaporama typ_diaporama;
 
-struct str_ennemies {
-    typ_snake *ennemy;
-    typ_ennemies *nxpt;
-};
-
-
-struct str_ennemies;
-typedef struct str_ennemies typ_ennemies;
-
-struct str_snake;
-typedef struct str_snake typ_snake;
-*/
 extern GLuint window, window2;
 extern typ_action action;
 extern typ_data *scoreList;
-extern int diaporama;
+extern typ_diaporama diaporama;
 
 // Prototypes.
 bool Setup(void);

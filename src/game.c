@@ -62,7 +62,8 @@ GLboolean lauded=0;
 GLboolean cleaned=0;
 GLboolean pause=0;
 
-int diaporama=0;
+typ_diaporama diaporama={.slide=0,.scroll=0};
+
 
 // ----------------------------------------------------
 //  Initialisation.
@@ -633,7 +634,23 @@ void specialKeyPressed(int key, int x, int y)
             keyPressed(ESCAPE,0,0);
             break;
         case DIAPORAMA:
-            keyDiaporama(key);
+            switch(key)
+            {
+                case GLUT_KEY_RIGHT:
+                diaporama.slide++;
+                break;
+                case GLUT_KEY_LEFT:
+                diaporama.slide--;
+                break;
+                case GLUT_KEY_UP:
+                diaporama.scroll++;
+                break;
+                case GLUT_KEY_DOWN:
+                diaporama.scroll--;
+                break;
+                default:
+                    break;
+            }
             break;
         default:
             printf("Key %d pressed. No action there yet.",key);
@@ -766,10 +783,14 @@ void timer(int value)
         case EXIT:
             break;
         case DIAPORAMA:
-            if(diaporama<0)
-                diaporama=0;
-            if(diaporama>10)
-                diaporama=10;
+            if(diaporama.slide<0)
+                diaporama.slide=0;
+            if(diaporama.slide>10)
+                diaporama.slide=10;
+            if(diaporama.scroll<0)
+                diaporama.scroll=0;
+            if(diaporama.scroll>10)
+                diaporama.scroll=10;
             break;
         default:
             break;
@@ -845,10 +866,10 @@ void freeAll(void)
 int main(int argc, char *argv[])
 {
     // new game.
-    typ_game *g=createGame("Monkey");
+    //typ_game *g=createGame("Monkey");
     // new list.
     struct str_data *LI=newlist();
-    int now[TIME_ARG] = {timeInt('J'),timeInt('M'),timeInt('A'),timeInt('h'),timeInt('m'),timeInt('s')};
+    //int now[TIME_ARG] = {timeInt('J'),timeInt('M'),timeInt('A'),timeInt('h'),timeInt('m'),timeInt('s')};
     // to insert game into a new list.
     //insertSorted(&L, now, g->username, g->score);
     LI=readData("../../data/score/score.csv");
