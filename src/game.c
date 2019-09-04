@@ -785,12 +785,12 @@ void timer(int value)
         case DIAPORAMA:
             if(diaporama.slide<0)
                 diaporama.slide=0;
-            if(diaporama.slide>10)
-                diaporama.slide=10;
+            if(diaporama.slide>40)
+                diaporama.slide=40;
             if(diaporama.scroll<0)
                 diaporama.scroll=0;
-            if(diaporama.scroll>10)
-                diaporama.scroll=10;
+            if(diaporama.scroll>40)
+                diaporama.scroll=40;
             break;
         default:
             break;

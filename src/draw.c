@@ -101,6 +101,8 @@ GLuint *loadTex(void)
     texID[21]=ImageLoad(LIVE);
 
     texID[22]=ImageLoad("../../data/dia/str_map.PNG");
+    texID[23]=ImageLoad("../../data/dia/str_tile.PNG");
+    texID[24]=ImageLoad("../../data/dia/InitAudio.PNG");
 
     return texID;
 }
@@ -220,11 +222,11 @@ void diaporamaDisplay(typ_diaporama diaporama)
     glEnd();
     glBegin(GL_LINES);
         glColor3f(0.0f, 0.0f, 0.0f);
-            glVertex2d(Square_size, 5*Square_size); // first point.
-            glVertex2d(WIDTH-Square_size, 5*Square_size); // second point.
+            glVertex2d(Square_size, 5*Square_size-Square_size*diaporama.scroll); // first point.
+            glVertex2d(WIDTH-Square_size, 5*Square_size-Square_size*diaporama.scroll); // second point.
         glColor3f(1.0f,1.0f,1.0f);
     glEnd();
-    vBitmapOutput(Square_size*12,3*Square_size,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
+    vBitmapOutput(Square_size*12,3*Square_size-Square_size*diaporama.scroll,"JUMPING BANANA",GLUT_BITMAP_HELVETICA_18);
     
     int i=10;
     switch(diaporama.slide)
@@ -235,35 +237,44 @@ void diaporamaDisplay(typ_diaporama diaporama)
         case 3:
         case 4:
         case 5:
-            //vReshape(WIDTH,Square_size*100);
-            //glViewport(0, 0, WIDTH, Square_size*20);
+        case 6:
             vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"Structure de fichier",GLUT_BITMAP_HELVETICA_18);
+            if(diaporama.slide==0)
+                glColor3f(1.0f, 0.0f, 0.0f);           
             i+=2;
             vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"/repository",GLUT_BITMAP_HELVETICA_12);
-            if(diaporama.slide==0)
-                glColor3f(1.0f, 0.0f, 0.0f);
-            i+=2;
-            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"build",GLUT_BITMAP_HELVETICA_12);
             glColor3f(1.0f,1.0f,1.0f);
             if(diaporama.slide==1)
                 glColor3f(1.0f, 0.0f, 0.0f);
             i+=2;
-            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"include",GLUT_BITMAP_HELVETICA_12);
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"build",GLUT_BITMAP_HELVETICA_12);
             glColor3f(1.0f,1.0f,1.0f);
             if(diaporama.slide==1){
+                i+=2; 
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"*.o",GLUT_BITMAP_HELVETICA_12);
+                i+=2;                
+            }
+            if(diaporama.slide==2)
+                glColor3f(1.0f, 0.0f, 0.0f);
+            i+=2;
+            vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"include",GLUT_BITMAP_HELVETICA_12);
+            glColor3f(1.0f,1.0f,1.0f);
+            if(diaporama.slide==2){
                 i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"GL",GLUT_BITMAP_HELVETICA_12);
                 i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"IL",GLUT_BITMAP_HELVETICA_12);
                 i+=2;
+                vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"FMOD",GLUT_BITMAP_HELVETICA_12);                
+                i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"*.h",GLUT_BITMAP_HELVETICA_12);
             }
-            if(diaporama.slide==2)
+            if(diaporama.slide==3)
                 glColor3f(1.0f, 0.0f, 0.0f);           
             i+=2;
             vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"lib",GLUT_BITMAP_HELVETICA_12);
             glColor3f(1.0f,1.0f,1.0f);
-            if(diaporama.slide==2){
+            if(diaporama.slide==3){
                 i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"linux",GLUT_BITMAP_HELVETICA_12);
                 i+=2;
@@ -275,36 +286,35 @@ void diaporamaDisplay(typ_diaporama diaporama)
                 i+=2;
                 vBitmapOutput(Square_size*14,Square_size*i-Square_size*diaporama.scroll,"*.lib",GLUT_BITMAP_HELVETICA_12);
             }
-            if(diaporama.slide==3)
+            if(diaporama.slide==4)
                 glColor3f(1.0f, 0.0f, 0.0f);  
             i+=2;
             vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"src",GLUT_BITMAP_HELVETICA_12);
             glColor3f(1.0f,1.0f,1.0f);
-            if(diaporama.slide==3){
+            if(diaporama.slide==4){
                 i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"*.c",GLUT_BITMAP_HELVETICA_12);
             }
-            if(diaporama.slide==4)
+            if(diaporama.slide==5)
                 glColor3f(1.0f, 0.0f, 0.0f);
             i+=2;
             vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"release",GLUT_BITMAP_HELVETICA_12);
             glColor3f(1.0f,1.0f,1.0f);       
-            if(diaporama.slide==4){
+            if(diaporama.slide==5){
                 i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"linux",GLUT_BITMAP_HELVETICA_12);
                 i+=2;
                 vBitmapOutput(Square_size*10,Square_size*i-Square_size*diaporama.scroll,"win32",GLUT_BITMAP_HELVETICA_12);
             }
-            if(diaporama.slide==5)
+            if(diaporama.slide==6)
                 glColor3f(1.0f, 0.0f, 0.0f);      
             i+=2;
             vBitmapOutput(Square_size*6,Square_size*i-Square_size*diaporama.scroll,"Makefile",GLUT_BITMAP_HELVETICA_12);
             glColor3f(1.0f,1.0f,1.0f); 
-            vBitmapOutput(Square_size*6,HEIGHT-4*Square_size,"Command : [~]$ tree",GLUT_BITMAP_HELVETICA_12);
-            vBitmapOutput(Square_size*6,HEIGHT-2*Square_size,"Latex : \\usepackage{dirtree}",GLUT_BITMAP_HELVETICA_12);
+            vBitmapOutput(Square_size*4,HEIGHT-Square_size,"Note: Linux command : [~]$ tree | Latex : \\usepackage{dirtree}",GLUT_BITMAP_HELVETICA_12);
             i=10;
         break;
-        case 6:
+        case 7:
             vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,
             ".h = header file, a source file containing declarations.",GLUT_BITMAP_HELVETICA_12);
             i+=4;
@@ -324,28 +334,137 @@ void diaporamaDisplay(typ_diaporama diaporama)
             "Just like a static one but it's loaded at run time.",GLUT_BITMAP_HELVETICA_12);
             i=10;
         break;
-        case 7:
-            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"Tile Mapping",GLUT_BITMAP_HELVETICA_18);
+        case 8:
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Tile Mapping",GLUT_BITMAP_HELVETICA_18);
             i+=2;
-            vBitmapOutput(Square_size*4,Square_size*i-Square_size*diaporama.scroll,"Tableau à deux dimensions",GLUT_BITMAP_HELVETICA_12);
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Une structure Map, definie dans le fichier map.h.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Un fichier .lvl, donne le nombre de bloc en largeur et hauteur.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Un tableau a plus d'une dimension, ou est stockee la map.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Un tableau aux dimensions identiques, ou est stockee les bananes.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Deux entiers pour reafficher la map au depart de xscroll & yscroll.",GLUT_BITMAP_HELVETICA_12);
             i+=2;
             glBindTexture(GL_TEXTURE_2D, texID[22]); // bind our texture.
-            float a=0.8;
-            float b=MaxX*Square_size-glutGet(GLUT_WINDOW_WIDTH);
-            float c=MaxY*Square_size-glutGet(GLUT_SCREEN_HEIGHT);
-            if(WIDTH>glutGet(GLUT_WINDOW_WIDTH))
-            {
-                a=1.6;
-            }
+            float x=368*SCALE, y=208*SCALE;
+            //if(WIDTH>glutGet(GLUT_WINDOW_WIDTH))
             //https://github.com/jacquets/1819_IHDCB132_Jacquet_S_2ndSession/blame/master/include/map.h
-            glTranslatef(Square_size*4,Square_size*15,0.0f);
+            glTranslatef(Square_size*4,Square_size*i-Square_size*diaporama.scroll,0.0f);
             glBegin(GL_QUADS);
-                glTexCoord2f(0.0f, 1.0f); glVertex2i(0,0);
-                glTexCoord2f(1.0f, 1.0f); glVertex2i(368*a-b,0);
-                glTexCoord2f(1.0f, 0.0f); glVertex2i(368*a-b,208*a-c);
-                glTexCoord2f(0.0f, 0.0f); glVertex2i(0,208*a-c);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(0,0);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(x,0);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(x,y);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(0,y);
             glEnd();
             glBindTexture(GL_TEXTURE_2D, 0);
+            //i+=y/Square_size-Square_size*diaporama.scroll;
+            //vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Note: .",GLUT_BITMAP_HELVETICA_12);
+            i=10;
+        break;
+        case 9:
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Tile Mapping",GLUT_BITMAP_HELVETICA_18);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Une image (sprite) contenue à l'adresse du pointeur texID.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"L autre champ, un entier dit si on peux traverser ou pas.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            x=389*SCALE, y=152*SCALE;
+            glTranslatef(Square_size*4,Square_size*i-Square_size*diaporama.scroll,0.0f);
+            glBindTexture(GL_TEXTURE_2D, texID[23]); // bind our texture.
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(0,0);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(x,0);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(x,y);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(0,y);
+            glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
+            //i+=y/Square_size-Square_size*diaporama.scroll;
+            //vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Note: .",GLUT_BITMAP_HELVETICA_12);
+            //i+=2;
+        break;
+        case 10:
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (1/10) : Main (main.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Definition de la taille et la position de l'écran.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Charger les images et les sons une seule fois.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Mais aussi initialiser les variables du jeu, champs de structure.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Afficher (et reafficher) l ecran de menu.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+        break;
+        case 11:
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (2/10) : Audio_init (audio.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"playAudio(0,1); = fonction qui joue la piste 0 si le second arg. est sur 1.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"playAudio(0,1); = fonction qui joue la piste 0 si le second arg. est sur 1.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"stopAudio(0); = fonction qui stoppe la piste '0' en cours.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"stopAudio(0); = fonction qui stoppe la piste '0' en cours.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
+            x=881*SCALE, y=252*SCALE;
+            glTranslatef(Square_size*4-Square_size*diaporama.scroll,Square_size*i,0.0f);
+            glBindTexture(GL_TEXTURE_2D, texID[24]); // bind our texture.
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(0,0);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(x,0);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(x,y);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(0,y);
+            glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
+        break;
+        case 12:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les prototypes utilises de Audio_init (audio.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_Create(FMOD_SYSTEM **system);.",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_Init(FMOD_SYSTEM *system",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",int maxchannels",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_INITFLAGS flags",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",void *extradriverdata);.",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_CreateSound(FMOD_SYSTEM *system",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",const char *name_or_data",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_MODE mode",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_CREATESOUNDEXINFO *exinfo",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_SOUND **sound);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_Sound_SetLoopCount(FMOD_SOUND *sound",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",int loopcount);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_PlaySound(FMOD_SYSTEM *system",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_SOUND *sound",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_CHANNELGROUP *channelgroup",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_BOOL paused",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,",FMOD_CHANNEL **channel);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_Channel_IsPlaying(FMOD_CHANNEL *channel,FMOD_BOOL *isplaying);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_Sound_Release(FMOD_SOUND *sound);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_Close(FMOD_SYSTEM *system);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_Release(FMOD_SYSTEM *system);",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_GetVersion(FMOD_SYSTEM *system,unsigned int *version);",GLUT_BITMAP_HELVETICA_10);
+            i=10;
         break;
         default:
             break;

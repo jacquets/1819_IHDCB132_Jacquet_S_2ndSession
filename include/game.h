@@ -77,8 +77,8 @@ struct str_object {
 typedef struct str_object typ_object, ptr_object;
 
 struct str_diaporama {
-    int scroll;
     int slide;
+    int scroll;
 };
 typedef struct str_diaporama typ_diaporama;
 

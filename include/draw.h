@@ -40,6 +40,7 @@
 
 #define texNB 22
 #define bufferNB 10
+#define SCALE 0.8 // to reshape image into diaporama at an adaptative scale to the real screen.
 
 #include "map.h"
 #include "game.h"
