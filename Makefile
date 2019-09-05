@@ -35,7 +35,7 @@ endif
 # -------------------------------------------------------------------
 
 # Compilation flags
-CFLAGS = -I $(INC_PATH) -std=c99 -Wall# -Wextra -pedantic
+CFLAGS = -I $(INC_PATH) -std=c99 -Wall #-Wextra -pedantic
 LDFLAGS = -L $(LIB_PATH) #-D_JUMPING_BANANA
 #lib\fmod_vc.lib
 

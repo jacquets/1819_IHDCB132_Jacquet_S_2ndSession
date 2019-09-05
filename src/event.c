@@ -60,7 +60,7 @@ void bananaCollision(typ_character *player, typ_map *map, typ_game *game)
     return;
 }
 
-void snakeCollision(typ_character *player, typ_character *ennemy, typ_map *map, typ_game *game)
+void snakeCollision(typ_character *player, typ_character *ennemy)
 {
     int res=CheckCollision(player->posChar, ennemy->posChar);
     if(res==1)
@@ -96,7 +96,7 @@ void updatePosition(typ_character *player, typ_character *ennemy, typ_map *map, 
         player->posChar->posY += player->v_y; // incrementation of the position.
     }
     bananaCollision(player, map, game);
-    snakeCollision(player, ennemy, map, game);
+    snakeCollision(player, ennemy);
 }
 
 int collision(typ_position* test, typ_map* map)

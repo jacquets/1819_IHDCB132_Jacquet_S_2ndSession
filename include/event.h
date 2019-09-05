@@ -21,7 +21,7 @@ typ_position *adjustment(typ_position *test, typ_map *map);
 void updatePosition(typ_character *player, typ_character *ennemy, typ_map *map, typ_decor *decor, typ_game *game);
 int collision(typ_position* test, typ_map* map); // own production.
 void bananaCollision(typ_character *player, typ_map *map, typ_game *game);
-void snakeCollision(typ_character *player, typ_character *ennemy, typ_map *map, typ_game *game);
+void snakeCollision(typ_character *player, typ_character *ennemy);
 void updateSnake(typ_character *ennemy, typ_character *player, typ_map *map);
 void updateLimits(typ_character* player, typ_map* map);
 

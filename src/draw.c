@@ -603,7 +603,7 @@ void scoreDisplay(typ_data *lptr)
     return;
 }
 
-void saveDisplay(typ_data *L)
+void saveDisplay(/*typ_data *L*/)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);

@@ -33,6 +33,7 @@
 void FMOD_Check(FMOD_RESULT result);
 void InitAudio(void);
 void playAudio(unsigned int SoundID, FMOD_BOOL isPlaying);
+void pauseAudio(FMOD_CHANNEL *channel);
 void stopAudio(void);
 void FMOD_Version(void);
 

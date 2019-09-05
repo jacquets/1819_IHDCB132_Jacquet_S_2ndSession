@@ -97,6 +97,7 @@ void writeData(char* filename, typ_data *L);
 typ_data *readData(char* filename);
 void saveSortedListGamePlays(typ_game *game);
 void saveGamePlay(typ_game *game);
+void saveGame(char* filename, typ_game *game, typ_data *lptr);
 void vDisplay(void);
 void vDisplay2(void);
 void changeGameState(typ_state newState);

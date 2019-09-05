@@ -61,6 +61,8 @@ typ_decor *decor=NULL;
 GLboolean lauded=0;
 GLboolean cleaned=0;
 GLboolean pause=0;
+int soundDelay=0;
+int soundIndice=6;
 
 typ_diaporama diaporama={.slide=0,.scroll=0};
 
@@ -336,11 +338,11 @@ void vDisplay(void)
                     glPushMatrix();
                       winDisplay();
                     glPopMatrix();
-                    saveSortedListGamePlays(g);
-                    saveGamePlay(g);
+                    //saveGame("../../data/score/score.csv",game,scoreList);
+                    saveGamePlay(game);
                     //sleep();
-                    freeAll(); // freeing all global variables.
-                    changeGameState(EXIT);
+                    //freeAll(); // freeing all global variables.
+                    //changeGameState(MENU);
                 }
                 else if(player->live==1)
                 {
@@ -475,7 +477,7 @@ void writeData(char* filename, typ_data *lptr)
     fclose(F);
 }
 
-void saveGamePlay(typ_game *g)
+void saveGamePlay(typ_game *game)
 {
     typ_data *lptr=newlist();
     char filename[40]; // we create a new file.
@@ -489,11 +491,11 @@ void saveGamePlay(typ_game *g)
     writeData(BACKUP1, lptr);
 }
 
-void saveGame(char* filename, typ_game *g, typ_data *lptr)
+void saveGame(char* filename, typ_game *game, typ_data *lptr)
 {
     int now[TIME_ARG] = {timeInt('J'),timeInt('M'),timeInt('A'),timeInt('h'),timeInt('m'),timeInt('s')};
     insertSorted(&lptr, now, game->username, game->score);
-    writeData(BACKUP2, lptr);
+    writeData(filename, lptr);
     //printList(lptr);  // Simple verification.
 }
 
@@ -530,9 +532,17 @@ void keyPressed(unsigned char key, int x, int y)
     case 'p' :
     case 'P' :
         if(pause==1)
+        {
             pause=0;
+            for(int i=6;i<=10;i++)
+            {
+                playAudio(i,0);
+            }
+        }
         else if(pause==0)
+        {
             pause=1;
+        }
         break;
     default:
         break;
@@ -544,6 +554,7 @@ void specialKeyPressed(int key, int x, int y)
     switch (state)
 	  {
         case MENU:
+            //playAudio(0,1);
           switch (key)
 	        {
                 case GLUT_KEY_DOWN:
@@ -570,6 +581,7 @@ void specialKeyPressed(int key, int x, int y)
           break;
         case GAME:
             player->control=CHARACTER;
+            playAudio(0,0);
             switch (key)
 	          {
                 case GLUT_KEY_DOWN:
@@ -579,6 +591,7 @@ void specialKeyPressed(int key, int x, int y)
                 case GLUT_KEY_UP:
                     if(!player->isJumping) // jump only once time.
                     {
+                        playAudio(4,1);
                         player->action=UP;
                         player->isJumping=true;
                         player->posChar->posY--;
@@ -687,6 +700,7 @@ void updateRender(void)
     {
         player->textureDelay=0;
     }
+
     if(player->textureDelay==5 && player->isJumping==0) // every 5 mili-seconds.
     {
         player->texSelected++;
@@ -696,6 +710,7 @@ void updateRender(void)
         }
         player->textureDelay=0;
     }
+    
     if(ennemy->textureDelay==5)
     {
         ennemy->texSelected++;
@@ -729,6 +744,27 @@ void updateRender(void)
     }
 }
 
+void updateSound(void)
+{
+    if(soundDelay==1)
+    {
+        playAudio(soundIndice,1);
+    }
+    else if(soundDelay==100)
+    {
+        playAudio(soundIndice,0);
+        soundIndice++;
+    }
+    
+    if(soundDelay==100){
+        soundDelay=0;
+    }
+    if(soundIndice==11){
+        soundIndice=6;
+    }
+    soundDelay++;
+}
+
 
 // ----------------------------------------------------
 //  Timer.
@@ -743,6 +779,7 @@ void Loop()
         updateRender();
         updatePosition(player,ennemy,map,decor,game);
         updateLimits(player,map);
+        updateSound();
     }
 }
 

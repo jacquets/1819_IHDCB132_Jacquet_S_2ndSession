@@ -30,7 +30,7 @@ bool nCache=0;
 GLuint secondScreen(char *windowName);
 void vReshape2(int w, int h);
 void vDisplay2(void);
-void keyPressed2(unsigned char key, int x, int y);
+void keyPressed2(unsigned char key/*, int x, int y*/);
 
 int main(int argc, char *argv[])
 {
@@ -102,7 +102,7 @@ void vReshape2(int w, int h)
 	gluOrtho2D(-L/2,L/2,-H/2,H/2);
 }
 
-void keyPressed2(unsigned char key, int x, int y)
+void keyPressed2(unsigned char key/*, int x, int y*/)
 {
 	switch (key) {
 

@@ -72,6 +72,11 @@ void playAudio(unsigned int SoundID, FMOD_BOOL isPlaying)
     err = FMOD_Channel_IsPlaying(channel_sound[SoundID],&isPlaying); FMOD_Check(err);
 }
 
+void pauseAudio(FMOD_CHANNEL *channel)
+{
+    FMOD_Channel_Stop(channel);
+}
+
 // freeing of the sounds and freeing of a 'system' object.
 void stopAudio()
 {

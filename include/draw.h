@@ -65,7 +65,7 @@ void banana(typ_map *map);
 void menuDisplay(void);
 void rulesDisplay(void);
 void scoreDisplay(typ_data *L);
-void saveDisplay(typ_data *L);
+void saveDisplay(/*typ_data *L*/);
 void keyDiaporama(int key);
 void updateDiaporama(void);
 void diaporamaDisplay(typ_diaporama diaporama);

@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void HandleDevILErrors(char *filename){
+void HandleDevILErrors(void){
 #ifdef _WIN32
   ILenum error=ilGetError();
 	if(error!=IL_NO_ERROR){
@@ -62,14 +62,14 @@ GLuint ImageLoad(char *filename)
   ilBindImage(ImgID); // Bind this image name.
   // Loads the image specified by File into the ImgId.
   if (!ilLoadImage(filename)){
-      HandleDevILErrors(filename); // Loading the image and check for errors
+      HandleDevILErrors(); // Loading the image and check for errors
   }
   // Bind image.
   GLuint TexID=ilutGLBindTexImage();
   // Unbind image and free DevIL image memory.
   ilBindImage(0);
 	ilDeleteImages(1,&ImgID); // We're done with our image, so we go ahead and delete it.
-  HandleDevILErrors(filename);
+  HandleDevILErrors();
 #else
   GLuint TexID=SOIL_load_OGL_texture(
       filename,

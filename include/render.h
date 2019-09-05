@@ -13,7 +13,7 @@
 //-
 
 /* Prototypes. */
-void HandleDevILErrors(char *filename);
+void HandleDevILErrors(void);
 void InitImage(void);
 GLuint ImageLoad(char *filename);
 void freeTexture(GLuint TexID);
