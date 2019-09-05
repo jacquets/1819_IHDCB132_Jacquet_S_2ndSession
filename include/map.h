@@ -57,11 +57,11 @@ typedef struct str_map typ_map;
 
 /* Prototypes. */
 typ_map *loadMap(char *lvl);
-void drawMap(typ_map *m);
-void initBanana(typ_map *m);
-void drawBanana(typ_map *m);
-void printMap(typ_map *m); // test function.
-void freeMap(typ_map *m);
+void drawMap(typ_map *map);
+void initBanana(typ_map *map);
+void drawBanana(typ_map *map);
+void printMap(typ_map *map); // test function.
+void freeMap(typ_map *map);
 
 
 #endif

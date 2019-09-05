@@ -93,11 +93,10 @@ typ_game *createGame(char *playerName);
 typ_character *createCharacter(int a);
 void vReshape(int NewWidth,int NewHeight);
 void InitGame(void);
-void game(void);
 void writeData(char* filename, typ_data *L);
 typ_data *readData(char* filename);
-void saveSortedListGamePlays(typ_game *g);
-void saveGamePlay(typ_game *g);
+void saveSortedListGamePlays(typ_game *game);
+void saveGamePlay(typ_game *game);
 void vDisplay(void);
 void vDisplay2(void);
 void changeGameState(typ_state newState);
@@ -106,8 +105,8 @@ void keyPressed(unsigned char key, int x, int y);
 void update(int value);
 void timerGame(void);
 void timer(int value);
-void freeGame(typ_game *g);
-void freeCharacter(typ_character *c);
+void freeGame(typ_game *game);
+void freeCharacter(typ_character *player,typ_character *ennemy);
 void freeAll(void);
 
 #endif

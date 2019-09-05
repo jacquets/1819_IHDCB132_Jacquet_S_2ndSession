@@ -103,6 +103,7 @@ GLuint *loadTex(void)
     texID[22]=ImageLoad("../../data/dia/str_map.PNG");
     texID[23]=ImageLoad("../../data/dia/str_tile.PNG");
     texID[24]=ImageLoad("../../data/dia/InitAudio.PNG");
+    texID[25]=ImageLoad("../../data/dia/InitGame.PNG");
 
     return texID;
 }
@@ -399,6 +400,8 @@ void diaporamaDisplay(typ_diaporama diaporama)
         case 11:
             vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (2/10) : Audio_init (audio.c).",GLUT_BITMAP_HELVETICA_18);
             i+=2;
+            vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"Audio_init(); = charge la musique.",GLUT_BITMAP_HELVETICA_12);
+            i+=2;
             vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"playAudio(0,1); = fonction qui joue la piste 0 si le second arg. est sur 1.",GLUT_BITMAP_HELVETICA_12);
             i+=2;
             vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"playAudio(0,1); = fonction qui joue la piste 0 si le second arg. est sur 1.",GLUT_BITMAP_HELVETICA_12);
@@ -407,7 +410,7 @@ void diaporamaDisplay(typ_diaporama diaporama)
             i+=2;
             vBitmapOutput(Square_size*2,Square_size*i-Square_size*diaporama.scroll,"stopAudio(0); = fonction qui stoppe la piste '0' en cours.",GLUT_BITMAP_HELVETICA_12);
             i+=2;
-            x=881*SCALE, y=252*SCALE;
+            x=881*SCALE*0.8, y=252*SCALE*0.8;
             glTranslatef(Square_size*4-Square_size*diaporama.scroll,Square_size*i,0.0f);
             glBindTexture(GL_TEXTURE_2D, texID[24]); // bind our texture.
             glBegin(GL_QUADS);
@@ -465,6 +468,24 @@ void diaporamaDisplay(typ_diaporama diaporama)
             i+=4;
             vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_GetVersion(FMOD_SYSTEM *system,unsigned int *version);",GLUT_BITMAP_HELVETICA_10);
             i=10;
+        break;
+        case 13:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Fonction appelée une fois par la main.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Elle appelle les fonctions de chargement d'images, de maps, ect.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            x=497*SCALE*0.8, y=555*SCALE*0.8;
+            glTranslatef(Square_size*4,Square_size*i-Square_size*diaporama.scroll,0.0f);
+            glBindTexture(GL_TEXTURE_2D, texID[25]); // bind our texture.
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(0,0);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(x,0);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(x,y);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(0,y);
+            glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
         break;
         default:
             break;

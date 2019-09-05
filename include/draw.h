@@ -61,7 +61,7 @@ void drawGame(float x, float y, float width, float height, int score);
 void drawTrellis(float x, float y, float width, float height);
 void coordDisplay(void);
 void background(void);
-void banana(typ_map *m);
+void banana(typ_map *map);
 void menuDisplay(void);
 void rulesDisplay(void);
 void scoreDisplay(typ_data *L);

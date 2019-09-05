@@ -17,13 +17,13 @@
 // Definitions.
 
 // Prototypes.
-typ_position *adjustment(typ_position *test, typ_map *m);
-void updatePosition(typ_character *c, typ_character *e, typ_map *m, typ_decor *d, typ_game *g);
-int collision(typ_position* test, typ_map* m); // own production.
-void bananaCollision(typ_character *c, typ_map *m, typ_game *g);
-void snakeCollision(typ_character *c, typ_character *e, typ_map *m, typ_game *g);
-void updateSnake(typ_character *e, typ_character *c, typ_map *m);
-void updateLimits(typ_character* c, typ_map* m);
+typ_position *adjustment(typ_position *test, typ_map *map);
+void updatePosition(typ_character *player, typ_character *ennemy, typ_map *map, typ_decor *decor, typ_game *game);
+int collision(typ_position* test, typ_map* map); // own production.
+void bananaCollision(typ_character *player, typ_map *map, typ_game *game);
+void snakeCollision(typ_character *player, typ_character *ennemy, typ_map *map, typ_game *game);
+void updateSnake(typ_character *ennemy, typ_character *player, typ_map *map);
+void updateLimits(typ_character* player, typ_map* map);
 
 GLboolean CheckCollision(typ_position *one, typ_position *two); // AABB system production.
 bool isColliding(typ_position *one, typ_position *two); // used in demo.

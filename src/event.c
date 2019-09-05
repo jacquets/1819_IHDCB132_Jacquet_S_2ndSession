@@ -29,9 +29,9 @@
 //  Update functions.
 // ----------------------------------------------------
 
-typ_position *adjustment(typ_position *test, typ_map *m)
+typ_position *adjustment(typ_position *test, typ_map *map)
 {
-    while(collision(test, m))
+    while(collision(test, map))
     {
         test->posY-=0.1;
     }
@@ -39,67 +39,67 @@ typ_position *adjustment(typ_position *test, typ_map *m)
     return test;
 }
 
-void bananaCollision(typ_character *c, typ_map *m, typ_game *g)
+void bananaCollision(typ_character *player, typ_map *map, typ_game *game)
 {
-    int minX = (c->posChar->posX + c->posChar->sizeX/2) / Square_size;
-    int minY = (c->posChar->posY + c->posChar->sizeY/2) / Square_size;
+    int minX = (player->posChar->posX + player->posChar->sizeX/2) / Square_size;
+    int minY = (player->posChar->posY + player->posChar->sizeY/2) / Square_size;
     int maxX = Square_size;
     int maxY = Square_size;
 
-    if(m->banana[minX][minY]==1)
+    if(map->banana[minX][minY]==1)
     {
-        if((minX + maxX) < c->posChar->posX
-        || (c->posChar->posX + c->posChar->sizeX) < minX
-        || (minY + maxY) < c->posChar->posY
-        || (c->posChar->posY + c->posChar->sizeY) < minY)
+        if((minX + maxX) < player->posChar->posX
+        || (player->posChar->posX + player->posChar->sizeX) < minX
+        || (minY + maxY) < player->posChar->posY
+        || (player->posChar->posY + player->posChar->sizeY) < minY)
         {
-            m->banana[minX][minY]=0;
-            g->score++;
+            map->banana[minX][minY]=0;
+            game->score++;
         }
     }
     return;
 }
 
-void snakeCollision(typ_character *c, typ_character *e, typ_map *m, typ_game *g)
+void snakeCollision(typ_character *player, typ_character *ennemy, typ_map *map, typ_game *game)
 {
-    int res=CheckCollision(c->posChar, e->posChar);
+    int res=CheckCollision(player->posChar, ennemy->posChar);
     if(res==1)
     {
-        c->live--;
+        player->live--;
     }
     return;
 }
 
-void updatePosition(typ_character *c, typ_character *e, typ_map *m, typ_decor *d, typ_game *g)
+void updatePosition(typ_character *player, typ_character *ennemy, typ_map *map, typ_decor *decor, typ_game *game)
 {
-    if(collision(c->posChar,m))
+    if(collision(player->posChar,map))
     {
-        if(c->isJumping==true)
+        if(player->isJumping==true)
         {
-            c->posChar=adjustment(c->posChar,m);
-            c->isJumping=false;
-            c->action=NONE;
+            player->posChar=adjustment(player->posChar,map);
+            player->isJumping=false;
+            player->action=NONE;
         }
     }
-    else if(isColliding(c->posChar, d->spiderWeb))
+    else if(isColliding(player->posChar, decor->spiderWeb))
     {
-        if(c->isJumping==true)
+        if(player->isJumping==true)
         {
-            c->isJumping=false;
-            c->action=DOWN;
+            player->isJumping=false;
+            player->action=DOWN;
         }
     }
     else
     {
-        c->action=DOWN;
-        c->v_y += v_grav; // incrementation of the speed.
-        c->posChar->posY += c->v_y; // incrementation of the position.
+        player->action=DOWN;
+        player->v_y += v_grav; // incrementation of the speed.
+        player->posChar->posY += player->v_y; // incrementation of the position.
     }
-    bananaCollision(c, m, g);
-    snakeCollision(c, e, m, g);
+    bananaCollision(player, map, game);
+    snakeCollision(player, ennemy, map, game);
 }
 
-int collision(typ_position* test, typ_map* m)
+int collision(typ_position* test, typ_map* map)
 {
     int collision_down/*, collision_up, collision_left, collision_right*/;
     int i=0, j=0, tileIndice;
@@ -109,73 +109,73 @@ int collision(typ_position* test, typ_map* m)
   	maxX = (test->posX + test->sizeX -1) / Square_size;
   	maxY = (test->posY + test->sizeY -1) / Square_size;
 
-if(test->sizeY + test->posY < m->height * Square_size - 10)
+if(test->sizeY + test->posY < map->height * Square_size - 10)
 {
     // If we hit a block below.
     j = (test->posY + test->sizeY) / Square_size;
     for(i=minX;i<=maxX;i++)
     {
-        tileIndice=m->matrice[i][j];
-        collision_down=(m->tiles[tileIndice].solid);
+        tileIndice=map->matrice[i][j];
+        collision_down=(map->tiles[tileIndice].solid);
     }
     // If we hit a block to the left.
     i=(test->posX -1) / Square_size;
     for(j=minY;j<=maxY;j++)
     {
-        tileIndice = m->matrice[i][j];
-        //collision_left=(m->tiles[tileIndice].solid);
+        tileIndice = map->matrice[i][j];
+        //collision_left=(map->tiles[tileIndice].solid);
         j=maxY+1;
     }
     // If we hit a block to the right.
     i=(test->posX + test->sizeX) / Square_size;
     for(j=minY;j<=maxY;j++)
     {
-        tileIndice = m->matrice[i][j];
-        //collision_right=(m->tiles[tileIndice].solid);
+        tileIndice = map->matrice[i][j];
+        //collision_right=(map->tiles[tileIndice].solid);
         j=maxY+1;
     }
     // If we hit a block above.
     j = (test->posY - 1) / Square_size;
     for(i=minX;i<=maxX;i++) //Si il y a un bloc au dessus
     {
-        tileIndice = m->matrice[i][j];
-        //collision_up=(m->tiles[tileIndice].solid);
+        tileIndice = map->matrice[i][j];
+        //collision_up=(map->tiles[tileIndice].solid);
     }
 }
 return collision_down /*|| collision_left || collision_right || collision_up*/;
 }
 
-void updateLimits(typ_character* c, typ_map* m)
+void updateLimits(typ_character* player, typ_map* map)
 {
     // bord gauche
-    if (c->posChar->posX < Square_size) //Si on touche le bord gauche de la map
+    if (player->posChar->posX < Square_size) //Si on touche le bord gauche de la map
     {
-        c->posChar->posX = Square_size + 1;
+        player->posChar->posX = Square_size + 1;
     }
     // bord droit
-    if (c->posChar->posX >= m->width*Square_size - c->posChar->sizeX - Square_size)
+    if (player->posChar->posX >= map->width*Square_size - player->posChar->sizeX - Square_size)
     {
-        c->posChar->posX = m->width*Square_size - c->posChar->sizeX - Square_size;
+        player->posChar->posX = map->width*Square_size - player->posChar->sizeX - Square_size;
     }
     // bord haut
-    if (c->posChar->posY<0)
+    if (player->posChar->posY<0)
     {
-        c->isJumping=false;
-        c->posChar->posY+=10;
-        c->v_y+=10;
+        player->isJumping=false;
+        player->posChar->posY+=10;
+        player->v_y+=10;
     }
 /*
-    if(c->action==JUMP)
+    if(player->action==JUMP)
     {
-        if(c->action==JUMP)
+        if(player->action==JUMP)
         {
-            if(c->jumptime<=1)
+            if(player->jumptime<=1)
             {
                 playAudio(4,1);
             }
-            c->jumptime+=10;
-            c->posChar->posY-=10;
-            if(c->jumptime>1000)
+            player->jumptime+=10;
+            player->posChar->posY-=10;
+            if(player->jumptime>1000)
             {
 //Ne pas sautez tout le temps si on laisse la touche haut activée
             }
@@ -186,53 +186,53 @@ void updateLimits(typ_character* c, typ_map* m)
                 //loseDisplay();
 }
 
-void updateSnake(typ_character *e, typ_character *c, typ_map *m)
+void updateSnake(typ_character *ennemy, typ_character *player, typ_map *map)
 {
-    int res=CheckCollision(c->posChar, e->posChar);
+    int res=CheckCollision(player->posChar, ennemy->posChar);
     if(res==1)
     {
-        if(e->action==RIGHT)
+        if(ennemy->action==RIGHT)
         {
-            e->posChar->posX-=15;
-            e->action=LEFT;
+            ennemy->posChar->posX-=15;
+            ennemy->action=LEFT;
         }
-        else if(e->action==LEFT)
+        else if(ennemy->action==LEFT)
         {
-            e->posChar->posX+=15;
-            e->action=RIGHT;
+            ennemy->posChar->posX+=15;
+            ennemy->action=RIGHT;
         }
     }
     else
     {
         // testing limits.
-        if(e->action==RIGHT)
+        if(ennemy->action==RIGHT)
         {
-          if(e->posChar->posX < m->width * Square_size - e->posChar->sizeX - 1) // don't reach the border right side.
-              e->posChar->posX+=1;
+          if(ennemy->posChar->posX < map->width * Square_size - ennemy->posChar->sizeX - 1) // don't reach the border right side.
+              ennemy->posChar->posX+=1;
           else
-              e->action=LEFT;
+              ennemy->action=LEFT;
         }
-        if(e->action==LEFT)
+        if(ennemy->action==LEFT)
         {
-          if(e->posChar->posX > 0)
-              e->posChar->posX-=1;
+          if(ennemy->posChar->posX > 0)
+              ennemy->posChar->posX-=1;
           else
-            e->action=RIGHT;
+            ennemy->action=RIGHT;
         }
     }
 
     // Ground collision else gravity.
-    int minX=(e->posChar->posX + e->posChar->sizeX/2) / Square_size;
-    int minY=(e->posChar->posY + e->posChar->sizeY) / Square_size;
-    if(m->matrice[minX][minY]==1)
+    int minX=(ennemy->posChar->posX + ennemy->posChar->sizeX/2) / Square_size;
+    int minY=(ennemy->posChar->posY + ennemy->posChar->sizeY) / Square_size;
+    if(map->matrice[minX][minY]==1)
     {
-        adjustment(e->posChar, m);
+        adjustment(ennemy->posChar, map);
     }
     else
     {
         // Gravity.
-        e->v_y += v_grav;
-        e->posChar->posY += e->v_y;
+        ennemy->v_y += v_grav;
+        ennemy->posChar->posY += ennemy->v_y;
     }
 }
 
