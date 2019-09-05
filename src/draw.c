@@ -104,6 +104,7 @@ GLuint *loadTex(void)
     texID[23]=ImageLoad("../../data/dia/str_tile.PNG");
     texID[24]=ImageLoad("../../data/dia/InitAudio.PNG");
     texID[25]=ImageLoad("../../data/dia/InitGame.PNG");
+    texID[26]=ImageLoad("../../data/dia/freeAll.PNG");
 
     return texID;
 }
@@ -467,7 +468,7 @@ void diaporamaDisplay(typ_diaporama diaporama)
             vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_Release(FMOD_SYSTEM *system);",GLUT_BITMAP_HELVETICA_10);
             i+=4;
             vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"FMOD_RESULT FMOD_System_GetVersion(FMOD_SYSTEM *system,unsigned int *version);",GLUT_BITMAP_HELVETICA_10);
-            i=10;
+            i=0;
         break;
         case 13:
             vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
@@ -486,6 +487,76 @@ void diaporamaDisplay(typ_diaporama diaporama)
                 glTexCoord2f(0.0f, 0.0f); glVertex2f(0,y);
             glEnd();
             glBindTexture(GL_TEXTURE_2D, 0);
+        break;
+        case 14:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Necessite que des variables soient definies au prealable:",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"GLuint window, window2;",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_state state=MENU; // to init game state.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_state selectedMenu=GAME;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_action action=RIGHT; // to init game menu.",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_data *scoreList=NULL; // list to manage Game Data.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_map *map=NULL;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_game *game=NULL;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_character *player=NULL;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_character *ennemy=NULL;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_object *object=NULL;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_decor *decor=NULL;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"GLboolean lauded=0;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"GLboolean cleaned=0;",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"GLboolean pause=0;",GLUT_BITMAP_HELVETICA_10);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"typ_diaporama diaporama={.slide=0,.scroll=0};",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+        break;
+        case 15:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Fonction appelée une fois par la main.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+            x=567*SCALE*0.8, y=374*SCALE*0.8;
+            glTranslatef(Square_size*4,Square_size*i-Square_size*diaporama.scroll,0.0f);
+            glBindTexture(GL_TEXTURE_2D, texID[25]); // bind our texture.
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 1.0f); glVertex2f(0,0);
+                glTexCoord2f(1.0f, 1.0f); glVertex2f(x,0);
+                glTexCoord2f(1.0f, 0.0f); glVertex2f(x,y);
+                glTexCoord2f(0.0f, 0.0f); glVertex2f(0,y);
+            glEnd();
+            glBindTexture(GL_TEXTURE_2D, 0);
+        break;
+        case 16:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Fonction appelée une fois par la main.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+        break;
+        case 17:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Fonction appelée une fois par la main.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
+        break;
+        case 18:
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Les fonctions (3/10) : gameInit (game.c).",GLUT_BITMAP_HELVETICA_18);
+            i+=4;
+            vBitmapOutput(Square_size,Square_size*i-Square_size*diaporama.scroll,"Fonction appelée une fois par la main.",GLUT_BITMAP_HELVETICA_10);
+            i+=2;
         break;
         default:
             break;

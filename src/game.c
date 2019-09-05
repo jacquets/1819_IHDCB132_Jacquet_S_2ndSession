@@ -333,10 +333,14 @@ void vDisplay(void)
                 }
                 else if(game->score==2)
                 {
-                    //freeAll(); // freeing all global variables.
                     glPushMatrix();
                       winDisplay();
                     glPopMatrix();
+                    saveSortedListGamePlays(g);
+                    saveGamePlay(g);
+                    //sleep();
+                    freeAll(); // freeing all global variables.
+                    changeGameState(EXIT);
                 }
                 else if(player->live==1)
                 {
@@ -368,27 +372,6 @@ void vDisplay(void)
     //glFlush();
     glBindTexture(GL_TEXTURE_2D,0);
     glutSwapBuffers();  // We use double buffering, so swap the buffers.
-    /*
-
-    if(player->live==0)
-    {
-        saveSortedListGamePlays(g);
-        saveGamePlay(g);
-        printf("Game saved.\n");
-        loseDisplay();
-        //freeAll(); // freeing all global variables.
-        //changeGameState(EXIT);
-    }
-    if(game->score==5)
-    {
-        saveSortedListGamePlays(g);
-        saveGamePlay(g);
-        printf("Game saved.\n");
-        winDisplay();
-        //freeAll(); // freeing all global variables.
-        //changeGameState(EXIT);
-    }
-    */
 }
 
 void vDisplay2(void)
